@@ -4,14 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
+
+#define CUSTOM_DEPTH_RED 250
 
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraEnemy : public AAuraCharacterBase
+class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
+
+public:
+
+	AAuraEnemy();
+
+	virtual void HighlightActors() override;
+	virtual void UnHighlightActors() override;
 	
 };
