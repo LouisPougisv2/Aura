@@ -4,29 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
-#include "GameFramework/Character.h"
-#include "AuraCharacterBase.generated.h"
+#include "GameFramework/PlayerState.h"
+#include "AuraPlayerState.generated.h"
 
-UCLASS(Abstract)
-class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
+/**
+ * Player State is the place where our Ability System Component & Attribute Set will live
+ */
+UCLASS()
+class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	AAuraCharacterBase();
+
+	AAuraPlayerState();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	class UAttributeSet * GetAttributeSet() const {return AttributeSet; };
 	
 protected:
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, Category = "Combat" )
-	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+	
 };
