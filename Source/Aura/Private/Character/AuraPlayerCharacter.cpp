@@ -31,13 +31,13 @@ void AAuraPlayerCharacter::InitAbilityActorInfo()
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
 	//Init the Overlay
-	AAuraPlayerController* PlayerController = CastChecked<AAuraPlayerController>(GetController());
-	if(IsValid(PlayerController))
+	if(AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
-		AAuraHUD* AuraHUD = CastChecked<AAuraHUD>(PlayerController->GetHUD());
-		AuraHUD->InitOverlay(PlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		if(AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
+		{
+			AuraHUD->InitOverlay(PlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		}
 	}
-	
 }
 
 void AAuraPlayerCharacter::PossessedBy(AController* NewController)
