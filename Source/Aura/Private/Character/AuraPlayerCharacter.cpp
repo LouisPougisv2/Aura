@@ -5,7 +5,9 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraPlayerCharacter::AAuraPlayerCharacter()
 {
@@ -27,6 +29,15 @@ void AAuraPlayerCharacter::InitAbilityActorInfo()
 	
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
+
+	//Init the Overlay
+	AAuraPlayerController* PlayerController = CastChecked<AAuraPlayerController>(GetController());
+	if(IsValid(PlayerController))
+	{
+		AAuraHUD* AuraHUD = CastChecked<AAuraHUD>(PlayerController->GetHUD());
+		AuraHUD->InitOverlay(PlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+	}
+	
 }
 
 void AAuraPlayerCharacter::PossessedBy(AController* NewController)
@@ -35,7 +46,6 @@ void AAuraPlayerCharacter::PossessedBy(AController* NewController)
 
 	//Init ability actor info for the server
 	InitAbilityActorInfo();
-	
 }
 
 void AAuraPlayerCharacter::OnRep_PlayerState()

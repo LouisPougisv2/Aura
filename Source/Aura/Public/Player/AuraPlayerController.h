@@ -32,8 +32,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UInputAction> MoveInputAction;
 
-	class IEnemyInterface* LastActor;
-	IEnemyInterface* CurrentActor;
+	TObjectPtr<class IEnemyInterface> LastActor;
+	TObjectPtr<IEnemyInterface> CurrentActor;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void CursorTrace();

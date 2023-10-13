@@ -19,12 +19,19 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UAuraUserWidget> OverlayWidget;
 
-protected:
+	UFUNCTION()
+	class UOverlayWidgetController* GetOverlayWidgetController(const struct FWidgetControllerParam& WidgetControllerParam);
 
-	virtual void BeginPlay() override;
+	void InitOverlay(APlayerController* PC, APlayerState* PS, class UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
 private:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 };
