@@ -15,20 +15,13 @@ public:
 
 	AAuraEffectActor();
 
-	UFUNCTION()
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
 
 	virtual void BeginPlay() override;
 
-private:
+	UFUNCTION(BlueprintCallable)
+	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<class UGameplayEffect> GameplayEffectClass);
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USphereComponent> SphereComponent;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStaticMeshComponent> StaticMesh;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Effects")
+	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
 };
