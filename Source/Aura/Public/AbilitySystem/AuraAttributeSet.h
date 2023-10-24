@@ -97,6 +97,5 @@ public:
 
 private:
 
-	UFUNCTION()
-	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, struct FEffectProperties& EffectProperties) const;
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;
 };
