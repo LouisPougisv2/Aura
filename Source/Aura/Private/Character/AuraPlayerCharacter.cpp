@@ -23,9 +23,17 @@ AAuraPlayerCharacter::AAuraPlayerCharacter()
 
 void AAuraPlayerCharacter::InitAbilityActorInfo()
 {
+	Super::InitAbilityActorInfo();
+	
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	ensureAlways(IsValid(AuraPlayerState));
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());
+	if(IsValid(AuraASC))
+	{
+		AuraASC->OnAbilityInfoSet();
+	}
 	
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
