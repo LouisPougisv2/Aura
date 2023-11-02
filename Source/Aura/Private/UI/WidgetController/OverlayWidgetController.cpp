@@ -27,15 +27,20 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	if(IsValid(AuraASC))
 	{
-		AuraASC->OnEffectAssetTagsDelegate.AddLambda( [] (const FGameplayTagContainer& GameplayTagContainer)
+		AuraASC->OnEffectAssetTagsDelegate.AddLambda( [this] (const FGameplayTagContainer& GameplayTagContainer)
 		{
 			for (const FGameplayTag& Tag : GameplayTagContainer)
 			{
-				//TODO : Broadcast Tag to widget controller
 				if(GEngine)
 				{
-					auto Message = FString::Printf(TEXT("Tag name : %s"), *Tag.ToString());
-					GEngine->AddOnScreenDebugMessage(-1, 7.0f, FColor::Blue, Message);
+					// For example, say that Tag = Message.HealthPotion
+					// "Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will 
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+					if(Tag.MatchesTag(MessageTag))
+					{
+                        FUIWidgetRow* FoundRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+                        OnMessageWidgetRow.Broadcast(*FoundRow);
+					}
 				}
 			}
 		});
@@ -60,4 +65,10 @@ void UOverlayWidgetController::OnManaChangedCallback(const FOnAttributeChangeDat
 void UOverlayWidgetController::OnMaxManaChangedCallback(const FOnAttributeChangeData& Data) const
 {
 	OnMaxManaChanged.Broadcast(Data.NewValue);
+}
+
+template <typename T>
+T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& GameplayTag)
+{
+	return DataTable->FindRow<T>(GameplayTag.GetTagName(), TEXT(""));
 }
