@@ -107,34 +107,42 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 
+	//Decreases taken damages & increases block chances
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor,  Category = "Secondary Attributes")
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
 
+	//Ignore a percentage of Enemy Armor & Increases Critical chances
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration,  Category = "Secondary Attributes")
 	FGameplayAttributeData ArmorPenetration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration);
 
+	//Chances to cut incoming damages in half
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockingChance,  Category = "Secondary Attributes")
 	FGameplayAttributeData BlockingChance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockingChance);
 
+	//Chances to double damages + Critical hit bonus
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance,  Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitChance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance);
 
+	//bonus damages added when landing a critical hit 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamages,  Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitDamages;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamages);
 
+	//Decreases chances to receive Critical Hit
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance,  Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitResistance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
 
+	//Amount of health regenerated every second
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration,  Category = "Secondary Attributes")
 	FGameplayAttributeData HealthRegeneration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
 	
+	//Amount of mana regenerated every second
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration,  Category = "Secondary Attributes")
 	FGameplayAttributeData ManaRegeneration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
