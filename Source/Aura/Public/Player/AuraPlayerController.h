@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interaction/EnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
 /**
@@ -32,8 +33,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UInputAction> MoveInputAction;
 
-	TObjectPtr<class IEnemyInterface> LastActor;
-	TObjectPtr<IEnemyInterface> CurrentActor;
+	IEnemyInterface* LastActor;
+	IEnemyInterface* CurrentActor;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void CursorTrace();
