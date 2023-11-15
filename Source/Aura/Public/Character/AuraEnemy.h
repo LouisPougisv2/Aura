@@ -25,10 +25,18 @@ public:
 	virtual void HighlightActors() override;
 	virtual void UnHighlightActors() override;
 	//End enemy interface
+
+	//Combat Interface
+	virtual int32 GetCharacterLevel() const override;
+	//EndCombat Interface
 	
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	
+	//Not replicated because we'll check the level only on the server for AI controlled enemies
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int32 Level = 1;
 	
 };
