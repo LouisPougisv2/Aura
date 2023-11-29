@@ -51,6 +51,19 @@ struct FEffectProperties
 /**
  * 
  */
+
+template <class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
+//We could make it point to any type of function, as follow:
+		//TStaticFuncPtr<float(float, int32, float)> RandomFuncPtr;
+		//static float RandomFunc(float F, int32 I, float F2) { return 0.1f };
+		//RandomFuncPtr = RandomFunction;
+		//float f = RandomFuncPtr(1.0f, 3, 1.0f);
+//A More Specific version would look like this
+//using FAttributeFunctionPointer = TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr;
+// ( Equivalent to FGameplayAttribute(*)())
+
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
 {
@@ -62,7 +75,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-
+	
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributesMap;
 	/*
 	 * Primary Attributes (RPG-style attributes)
 	 */
