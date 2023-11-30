@@ -22,6 +22,9 @@ public:
 	UFUNCTION()
 	class UOverlayWidgetController* GetOverlayWidgetController(const struct FWidgetControllerParam& WidgetControllerParam);
 
+	UFUNCTION()
+	class UAttributesMenuWidgetController* GetAttributesMenuWidgetController(const struct FWidgetControllerParam& WidgetControllerParam);
+
 	void InitOverlay(APlayerController* PC, APlayerState* PS, class UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
 private:
@@ -34,4 +37,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UAttributesMenuWidgetController> AttributesMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAttributesMenuWidgetController> AttributesMenuWidgetControllerClass;
 };
