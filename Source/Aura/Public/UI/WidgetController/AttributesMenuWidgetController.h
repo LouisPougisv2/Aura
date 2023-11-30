@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "AttributesMenuWidgetController.generated.h"
 
@@ -29,4 +30,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAttributeInfo> AttributeInfo;
+
+private:
+
+	void BroadcastAttributeInfo(const struct FGameplayTag& AttributeTag, const struct FGameplayAttribute& Attribute) const;
 };
