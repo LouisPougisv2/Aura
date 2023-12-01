@@ -18,6 +18,7 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 
 	void OnAbilityInfoSet();
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpAbilities);
 
 	//Public because our widget controller will need to bind to it
 	FEffectAssetTagsDelegate OnEffectAssetTagsDelegate;
