@@ -33,10 +33,18 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UInputAction> MoveInputAction;
 
+	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
+	TObjectPtr<class UAuraInputConfig> AuraInputConfig;
+
 	IEnemyInterface* LastActor;
 	IEnemyInterface* CurrentActor;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void CursorTrace();
+
+	//Input Callback functions
+	void AbilityInputTagPressed(struct FGameplayTag InputTag);
+	void AbilityInputTagReleased(struct FGameplayTag InputTag);
+	void AbilityInputTagHeld(struct FGameplayTag InputTag);
 	
 };
