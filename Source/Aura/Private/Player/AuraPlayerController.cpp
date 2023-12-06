@@ -3,8 +3,10 @@
 
 #include "Player/AuraPlayerController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
-#include "Character/AuraEnemy.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Character/AuraPlayerCharacter.h"
 #include "Inputs/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
@@ -112,10 +114,28 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(2, 5.0f, FColor::Red, FString::Printf(TEXT("Key [%s] Released! \n"), *InputTag.ToString()));
+	UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+	if(IsValid(AuraAbilitySystemComp))
+	{
+		AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(3, 5.0f, FColor::Orange, FString::Printf(TEXT("Key [%s] Held! \n"), *InputTag.ToString()));
+	UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+	if(IsValid(AuraAbilitySystemComp))
+	{
+		AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+	}
+}
+
+UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraAbilitySystemComponent()
+{
+	if(!IsValid(AuraAbilitySystemComponent))
+	{
+		UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>());
+		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	}
+	return AuraAbilitySystemComponent;
 }

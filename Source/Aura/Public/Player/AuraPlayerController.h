@@ -36,6 +36,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UAuraInputConfig> AuraInputConfig;
 
+	UPROPERTY()
+	TObjectPtr<class UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
 	IEnemyInterface* LastActor;
 	IEnemyInterface* CurrentActor;
 	
@@ -46,5 +49,6 @@ private:
 	void AbilityInputTagPressed(struct FGameplayTag InputTag);
 	void AbilityInputTagReleased(struct FGameplayTag InputTag);
 	void AbilityInputTagHeld(struct FGameplayTag InputTag);
-	
+
+	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
 };

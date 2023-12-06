@@ -20,6 +20,9 @@ public:
 	void OnAbilityInfoSet();
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpAbilities);
 
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	
 	//Public because our widget controller will need to bind to it
 	FEffectAssetTagsDelegate OnEffectAssetTagsDelegate;
 	
