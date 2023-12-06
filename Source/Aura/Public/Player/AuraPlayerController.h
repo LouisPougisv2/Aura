@@ -50,5 +50,20 @@ private:
 	void AbilityInputTagReleased(struct FGameplayTag InputTag);
 	void AbilityInputTagHeld(struct FGameplayTag InputTag);
 
+	//-------------- Click To Move Variable --------------
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
+
+	FVector CachedDestination = FVector::ZeroVector;
+
+	float FollowCursorTime = 0.0f;
+	float ShortPressedThreshold = 0.5f;
+	bool bIsAutoRunning = false;
+	bool bIsTargetingEnemy = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.0f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USplineComponent> SplinePath;
+	//-------------- End of Click To Move Variable --------------
 };

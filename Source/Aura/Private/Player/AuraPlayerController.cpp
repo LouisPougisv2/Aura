@@ -4,15 +4,21 @@
 #include "Player/AuraPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Character/AuraPlayerCharacter.h"
+#include "Components/SplineComponent.h"
 #include "Inputs/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+	
+	SplinePath = CreateDefaultSubobject<USplineComponent>(TEXT("SplinePath"));
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -109,24 +115,93 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Green, FString::Printf(TEXT("Key [%s] Pressed! \n"), *InputTag.ToString()));
+	if(InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		bIsTargetingEnemy = CurrentActor ? true : false;
+		bIsAutoRunning = false; //We don't know yet if it is a short press
+	}
+	
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
-	if(IsValid(AuraAbilitySystemComp))
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+		}
+		return;
+	}
+	
+	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+		}
+	}
+	else //Click to Move case
+	{		
+		APawn* ControlledPawn = GetPawn();
+		if(IsValid(ControlledPawn) && FollowCursorTime <= ShortPressedThreshold)
+		{
+			if(UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
+			{
+				SplinePath->ClearSplinePoints();
+				for (const FVector& PointLocation : NavigationPath->PathPoints)
+				{
+					SplinePath->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
+					DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
+				}
+				bIsAutoRunning = true;
+			}
+			
+		}
+		FollowCursorTime = 0.0f;
+		bIsTargetingEnemy = false;
 	}
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
-	if(IsValid(AuraAbilitySystemComp))
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+		}
+		return;
+	}
+
+	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+		}
+	}
+	else //Click to Move case
+	{
+		FollowCursorTime += GetWorld()->GetDeltaSeconds();
+
+		FHitResult HitResults;
+
+		if(GetHitResultUnderCursor(ECC_Visibility, false, HitResults))
+		{
+			CachedDestination = HitResults.ImpactPoint;
+		}
+
+		APawn* ControlledPawn = GetPawn();
+		if(IsValid(ControlledPawn))
+		{
+			const FVector DirectionToDestination = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(DirectionToDestination);
+		}
 	}
 }
 
