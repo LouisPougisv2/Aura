@@ -60,6 +60,28 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+
+	AutoRunning();
+}
+
+void AAuraPlayerController::AutoRunning()
+{
+	if(!bIsAutoRunning) return;
+	
+	APawn* ControlledPawn = GetPawn();
+	if(IsValid(ControlledPawn))
+	{
+		//Getting the location on the spline that is the closest to the controlled pawn
+		const FVector LocationOnSpline = SplinePath->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		const FVector DirectionToClosestLocation = SplinePath->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		ControlledPawn->AddMovementInput(DirectionToClosestLocation);
+
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if(DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bIsAutoRunning = false;
+		}
+	}
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -148,6 +170,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		APawn* ControlledPawn = GetPawn();
 		if(IsValid(ControlledPawn) && FollowCursorTime <= ShortPressedThreshold)
 		{
+			//Don't forget to turn on Project Settings -> Navigation System -> Allow Client Side Navigation if we want this path to be generated on clients
 			if(UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
 			{
 				SplinePath->ClearSplinePoints();
@@ -156,6 +179,9 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					SplinePath->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
 					DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
 				}
+
+				//Fix issue when clicking at the base of a pilar where the CachedDestination below the cursor wasn't registered as a valid Navigation Point!
+				CachedDestination = NavigationPath->PathPoints[NavigationPath->PathPoints.Num() - 1];
 				bIsAutoRunning = true;
 			}
 			
@@ -214,3 +240,4 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraAbilitySystemComponen
 	}
 	return AuraAbilitySystemComponent;
 }
+

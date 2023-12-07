@@ -53,6 +53,8 @@ private:
 	//-------------- Click To Move Variable --------------
 	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
 
+	void AutoRunning();
+
 	FVector CachedDestination = FVector::ZeroVector;
 
 	float FollowCursorTime = 0.0f;
