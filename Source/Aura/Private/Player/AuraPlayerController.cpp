@@ -102,7 +102,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if(!CursorHit.bBlockingHit) return;
 	
@@ -177,7 +176,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				for (const FVector& PointLocation : NavigationPath->PathPoints)
 				{
 					SplinePath->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
+					//DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
 				}
 
 				//Fix issue when clicking at the base of a pilar where the CachedDestination below the cursor wasn't registered as a valid Navigation Point!
@@ -215,11 +214,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowCursorTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult HitResults;
-
-		if(GetHitResultUnderCursor(ECC_Visibility, false, HitResults))
+		if(CursorHit.bBlockingHit)
 		{
-			CachedDestination = HitResults.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 		}
 
 		APawn* ControlledPawn = GetPawn();
