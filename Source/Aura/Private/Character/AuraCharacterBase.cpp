@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -18,6 +19,13 @@ AAuraCharacterBase::AAuraCharacterBase()
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+FVector AAuraCharacterBase::GetCombatSocketLocation()
+{
+	ensureAlways(IsValid(WeaponMesh));
+	
+	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);
 }
 
 void AAuraCharacterBase::BeginPlay()

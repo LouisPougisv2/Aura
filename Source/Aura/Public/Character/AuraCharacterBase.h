@@ -25,8 +25,13 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
+	virtual FVector GetCombatSocketLocation() override;
+	
 	UPROPERTY(EditAnywhere, Category = "Combat" )
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName WeaponTipSocketName;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
