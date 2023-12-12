@@ -3,14 +3,22 @@
 
 #include "Player/AuraPlayerController.h"
 
-#include "EnhancedInputComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
-#include "Character/AuraEnemy.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Character/AuraPlayerCharacter.h"
+#include "Components/SplineComponent.h"
+#include "Inputs/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+	
+	SplinePath = CreateDefaultSubobject<USplineComponent>(TEXT("SplinePath"));
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -41,8 +49,10 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	UAuraEnhancedInputComponent* AuraInputComponent = CastChecked<UAuraEnhancedInputComponent>(InputComponent);
+	AuraInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+
+	AuraInputComponent->BindAbilityAction(AuraInputConfig, this, &AAuraPlayerController::AbilityInputTagPressed, &AAuraPlayerController::AbilityInputTagReleased, &AAuraPlayerController::AbilityInputTagHeld);
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -50,6 +60,28 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+
+	AutoRunning();
+}
+
+void AAuraPlayerController::AutoRunning()
+{
+	if(!bIsAutoRunning) return;
+	
+	APawn* ControlledPawn = GetPawn();
+	if(IsValid(ControlledPawn))
+	{
+		//Getting the location on the spline that is the closest to the controlled pawn
+		const FVector LocationOnSpline = SplinePath->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		const FVector DirectionToClosestLocation = SplinePath->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		ControlledPawn->AddMovementInput(DirectionToClosestLocation);
+
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if(DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bIsAutoRunning = false;
+		}
+	}
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -70,7 +102,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if(!CursorHit.bBlockingHit) return;
 	
@@ -102,3 +133,108 @@ void AAuraPlayerController::CursorTrace()
 		}
 	}
 }
+
+void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	if(InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		bIsTargetingEnemy = CurrentActor ? true : false;
+		bIsAutoRunning = false; //We don't know yet if it is a short press
+	}
+	
+}
+
+void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+		}
+		return;
+	}
+	
+	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
+		}
+	}
+	else //Click to Move case
+	{		
+		APawn* ControlledPawn = GetPawn();
+		if(IsValid(ControlledPawn) && FollowCursorTime <= ShortPressedThreshold)
+		{
+			//Don't forget to turn on Project Settings -> Navigation System -> Allow Client Side Navigation if we want this path to be generated on clients
+			if(UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
+			{
+				SplinePath->ClearSplinePoints();
+				for (const FVector& PointLocation : NavigationPath->PathPoints)
+				{
+					SplinePath->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
+					//DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
+				}
+
+				//Fix issue when clicking at the base of a pilar where the CachedDestination below the cursor wasn't registered as a valid Navigation Point!
+				CachedDestination = NavigationPath->PathPoints[NavigationPath->PathPoints.Num() - 1];
+				bIsAutoRunning = true;
+			}
+			
+		}
+		FollowCursorTime = 0.0f;
+		bIsTargetingEnemy = false;
+	}
+}
+
+void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+		}
+		return;
+	}
+
+	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
+	{
+		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
+		if(IsValid(AuraAbilitySystemComp))
+		{
+			AuraAbilitySystemComp->AbilityInputTagHeld(InputTag);
+		}
+	}
+	else //Click to Move case
+	{
+		FollowCursorTime += GetWorld()->GetDeltaSeconds();
+
+		if(CursorHit.bBlockingHit)
+		{
+			CachedDestination = CursorHit.ImpactPoint;
+		}
+
+		APawn* ControlledPawn = GetPawn();
+		if(IsValid(ControlledPawn))
+		{
+			const FVector DirectionToDestination = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(DirectionToDestination);
+		}
+	}
+}
+
+UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraAbilitySystemComponent()
+{
+	if(!IsValid(AuraAbilitySystemComponent))
+	{
+		UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>());
+		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	}
+	return AuraAbilitySystemComponent;
+}
+

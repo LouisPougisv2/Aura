@@ -33,10 +33,40 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UInputAction> MoveInputAction;
 
+	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
+	TObjectPtr<class UAuraInputConfig> AuraInputConfig;
+
+	UPROPERTY()
+	TObjectPtr<class UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
 	IEnemyInterface* LastActor;
 	IEnemyInterface* CurrentActor;
+	FHitResult CursorHit;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void CursorTrace();
-	
+
+	//Input Callback functions
+	void AbilityInputTagPressed(struct FGameplayTag InputTag);
+	void AbilityInputTagReleased(struct FGameplayTag InputTag);
+	void AbilityInputTagHeld(struct FGameplayTag InputTag);
+
+	//-------------- Click To Move Variable --------------
+	UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
+
+	void AutoRunning();
+
+	FVector CachedDestination = FVector::ZeroVector;
+
+	float FollowCursorTime = 0.0f;
+	float ShortPressedThreshold = 0.5f;
+	bool bIsAutoRunning = false;
+	bool bIsTargetingEnemy = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.0f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USplineComponent> SplinePath;
+	//-------------- End of Click To Move Variable --------------
 };
