@@ -9,8 +9,11 @@
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
 
-	if(HasAuthority(&ActivationInfo) && ProjectileClass.Get())
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	if(GetAvatarActorFromActorInfo()->HasAuthority() && ProjectileClass.Get())
 	{
 		ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 		if(CombatInterface)
