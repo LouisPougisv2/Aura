@@ -47,7 +47,7 @@ void UTargetDataUnderMouseAbilityTask::SendMouseCursorData()
 	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
 	Data->HitResult = HitResult;
 	DataHandle.Add(Data);
-	
+	auto test = GetActivationPredictionKey();
 	AbilitySystemComponent->ServerSetReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey(), DataHandle, FGameplayTag(), AbilitySystemComponent->ScopedPredictionKey);
 
 	if(ShouldBroadcastAbilityTaskDelegates())

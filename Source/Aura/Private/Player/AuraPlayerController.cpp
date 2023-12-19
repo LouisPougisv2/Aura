@@ -51,6 +51,8 @@ void AAuraPlayerController::SetupInputComponent()
 
 	UAuraEnhancedInputComponent* AuraInputComponent = CastChecked<UAuraEnhancedInputComponent>(InputComponent);
 	AuraInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraInputComponent->BindAction(ShiftInputAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+	AuraInputComponent->BindAction(ShiftInputAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
 
 	AuraInputComponent->BindAbilityAction(AuraInputConfig, this, &AAuraPlayerController::AbilityInputTagPressed, &AAuraPlayerController::AbilityInputTagReleased, &AAuraPlayerController::AbilityInputTagHeld);
 }
@@ -98,6 +100,16 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 	}
+}
+
+void AAuraPlayerController::ShiftPressed()
+{
+	bIsShiftKeyDown = true;
+}
+
+void AAuraPlayerController::ShiftReleased()
+{
+	bIsShiftKeyDown = false;
 }
 
 void AAuraPlayerController::CursorTrace()
@@ -148,25 +160,17 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
-		if(IsValid(AuraAbilitySystemComp))
-		{
-			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
-		}
+		if(IsValid(GetAuraAbilitySystemComponent())) GetAuraAbilitySystemComponent()->AbilityInputTagReleased(InputTag);
+
 		return;
 	}
-	
-	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
-	{
-		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
-		if(IsValid(AuraAbilitySystemComp))
-		{
-			AuraAbilitySystemComp->AbilityInputTagReleased(InputTag);
-		}
-	}
-	else //Click to Move case
+
+	//If we release the LMB while holding Shift key, we still want to let the ASC know that the LMB has been released
+	if(IsValid(GetAuraAbilitySystemComponent())) GetAuraAbilitySystemComponent()->AbilityInputTagReleased(InputTag);
+
+	if(!bIsTargetingEnemy && !bIsShiftKeyDown) //Click to Move case
 	{		
-		APawn* ControlledPawn = GetPawn();
+		const APawn* ControlledPawn = GetPawn();
 		if(IsValid(ControlledPawn) && FollowCursorTime <= ShortPressedThreshold)
 		{
 			//Don't forget to turn on Project Settings -> Navigation System -> Allow Client Side Navigation if we want this path to be generated on clients
@@ -202,7 +206,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	if(bIsTargetingEnemy) // LMB && Hovering over Enemy case
+	if(bIsTargetingEnemy || bIsShiftKeyDown) // LMB && Hovering over Enemy case
 	{
 		UAuraAbilitySystemComponent* AuraAbilitySystemComp = GetAuraAbilitySystemComponent();
 		if(IsValid(AuraAbilitySystemComp))
