@@ -25,8 +25,29 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	virtual void Destroyed() override;
+
+	void ImpactSoundAndEffect();
+	
 private:
+
+	UPROPERTY(EditAnywhere)
+	float LifeSpan = 6.0f;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> CollisionSphere;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraSystem> ImpactEffect;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USoundBase> LoopingSound;
+
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	
+	bool bHit = false;
 };
