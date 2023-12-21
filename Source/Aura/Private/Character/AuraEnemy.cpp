@@ -5,6 +5,8 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widgets/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -16,6 +18,9 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));
+
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthWidgetComponent->SetupAttachment(GetRootComponent());
 }
 
 void AAuraEnemy::HighlightActors()
@@ -43,6 +48,16 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo();
+
+	//Setting the Progress bar user widget controller
+	UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthWidgetComponent->GetUserWidgetObject());
+	if(IsValid(AuraUserWidget))
+	{
+		AuraUserWidget->SetWidgetController(this);
+	}
+
+	//Binding the Attribute Value changed delegate + Broadcasting initial values 
+	BindAttributeValueChangeDelegates();
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
@@ -56,4 +71,27 @@ void AAuraEnemy::InitAbilityActorInfo()
 		AuraASC->OnAbilityInfoSet();
 	}
 	InitializeDefaultAttributes();
+}
+
+void AAuraEnemy::BindAttributeValueChangeDelegates()
+{
+	const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
+	if(AuraAttributeSet)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddLambda(
+		 	[this](const FOnAttributeChangeData& Data)
+		 	{
+		 	 OnMaxHealthChanged.Broadcast(Data.NewValue);
+		 	}
+		);
+
+		OnHealthChanged.Broadcast(AuraAttributeSet->GetHealth());
+		OnMaxHealthChanged.Broadcast(AuraAttributeSet->GetMaxHealth());
+	}
 }
