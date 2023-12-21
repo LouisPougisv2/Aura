@@ -34,6 +34,11 @@ private:
 	TObjectPtr<class UInputAction> MoveInputAction;
 
 	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
+	TObjectPtr<class UInputAction> ShiftInputAction;
+
+	bool bIsShiftKeyDown = false;
+
+	UPROPERTY(EditAnywhere, Category = "Enhanced Inputs")
 	TObjectPtr<class UAuraInputConfig> AuraInputConfig;
 
 	UPROPERTY()
@@ -44,6 +49,8 @@ private:
 	FHitResult CursorHit;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
+	void ShiftPressed();
+	void ShiftReleased();
 	void CursorTrace();
 
 	//Input Callback functions

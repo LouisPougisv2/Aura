@@ -109,7 +109,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		{
 			if(const APawn* Pawn = Cast<APawn>(EffectProperties.SourceAvatarActor))
 			{
-				EffectProperties.SourcePlayerController = CastChecked<APlayerController>(Pawn->GetController());
+				EffectProperties.SourcePlayerController = Cast<APlayerController>(Pawn->GetController());
 			}
 		}
 
