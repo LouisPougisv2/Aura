@@ -55,4 +55,5 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		AuraASC->OnAbilityInfoSet();
 	}
+	InitializeDefaultAttributes();
 }

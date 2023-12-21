@@ -88,6 +88,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0, FColor::Black, FString::Printf(TEXT("Changed Health on %s, Health : %f \n"), *EffectProperties.TargetAvatarActor->GetName(), GetHealth()));
 	}
 
 	if(Data.EvaluatedData.Attribute == GetManaAttribute())
@@ -109,7 +110,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		{
 			if(const APawn* Pawn = Cast<APawn>(EffectProperties.SourceAvatarActor))
 			{
-				EffectProperties.SourcePlayerController = CastChecked<APlayerController>(Pawn->GetController());
+				EffectProperties.SourcePlayerController = Cast<APlayerController>(Pawn->GetController());
 			}
 		}
 
