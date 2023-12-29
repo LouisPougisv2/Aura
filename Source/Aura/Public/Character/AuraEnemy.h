@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Datas/CharacterClassInfo.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
@@ -36,11 +37,16 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
+
 	
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	//Not replicated because we'll check the level only on the server for AI controlled enemies
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
