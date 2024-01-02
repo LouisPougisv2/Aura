@@ -162,6 +162,14 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 
 	/**
+	 * Meta Attributes (never replicated! They are set on the server, then the server process the data and finally, it changes any replicated attributes)
+	 * These attributes will allow us to perform all kind of calculation before actually setting a new value on an attributes
+	 */
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
+	/**
 	 * Primary Attributes Rep Notifies functions
 	 */
 
