@@ -66,6 +66,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	//The capsule won't block other characters or other objects to go through it
+
+	Dissolve();
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -105,4 +107,23 @@ void AAuraCharacterBase::AddCharacterAbilities()
 	UAuraAbilitySystemComponent* AuraAbilitySystemComponent = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraAbilitySystemComponent->AddCharacterAbilities(StartUpAbilities);
 	
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	if(IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicMaterialInstance);
+		
+		StartDissolveTimeline(DynamicMaterialInstance);
+	}
+	
+	if(IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* WeaponDynamicMaterialInstance = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		WeaponMesh->SetMaterial(0, WeaponDynamicMaterialInstance);
+		
+		StartWeaponDissolveTimeline(WeaponDynamicMaterialInstance);
+	}
 }
