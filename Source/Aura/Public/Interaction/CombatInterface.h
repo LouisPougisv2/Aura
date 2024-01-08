@@ -23,6 +23,7 @@ public:
 
 	virtual int32 GetCharacterLevel() const;
 	virtual FVector GetCombatSocketLocation();
+	virtual void Die() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetFacingWarpTarget(const FVector& TargetLocation);
