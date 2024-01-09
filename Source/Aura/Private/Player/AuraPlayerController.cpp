@@ -13,12 +13,26 @@
 #include "Components/SplineComponent.h"
 #include "Inputs/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/Widgets/DamageTextWidgetComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
 	
 	SplinePath = CreateDefaultSubobject<USplineComponent>(TEXT("SplinePath"));
+}
+
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	if(!IsValid(TargetCharacter) || !DamageTextComponentClass) return;
+
+	UDamageTextWidgetComponent* DamageText = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
+	DamageText->RegisterComponent();
+	DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	DamageText->SetDamageText(DamageAmount);
+
+	//As we want the DamageText to play its animation WITHOUT following the Character, we can detach it
+	DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 }
 
 void AAuraPlayerController::BeginPlay()
