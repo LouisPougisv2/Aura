@@ -14,9 +14,11 @@ struct AuraDamageStatics
 	//Following line is used to declare an FProperty && a Gameplay attribute capture def.
 	//Note : "Armor" doesn't need to be a variable, it is only a token
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockingChance);
 	AuraDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockingChance, Target, false);
 	}
 	
 };
