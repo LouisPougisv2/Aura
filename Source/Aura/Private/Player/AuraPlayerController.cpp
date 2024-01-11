@@ -24,7 +24,7 @@ AAuraPlayerController::AAuraPlayerController()
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
 {
-	if(!IsValid(TargetCharacter) || !DamageTextComponentClass) return;
+	if(!IsValid(TargetCharacter) || !DamageTextComponentClass || !IsLocalController()) return;
 
 	UDamageTextWidgetComponent* DamageText = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
 	DamageText->RegisterComponent();

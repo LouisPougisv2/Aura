@@ -168,7 +168,7 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& InEffectProper
 {
 	if(InEffectProperties.SourceCharacter != InEffectProperties.TargetCharacter)
 	{
-		AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(InEffectProperties.SourceCharacter, 0));
+		AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(InEffectProperties.SourceCharacter->Controller);
 		if(IsValid(PlayerController))
 		{
 			PlayerController->ShowDamageNumber(Damage, InEffectProperties.TargetCharacter);
