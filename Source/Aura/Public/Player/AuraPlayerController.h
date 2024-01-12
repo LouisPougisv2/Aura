@@ -18,6 +18,9 @@ class AURA_API AAuraPlayerController : public APlayerController
 public:
 
 	AAuraPlayerController();
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
 	
 protected:
 
@@ -76,4 +79,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USplineComponent> SplinePath;
 	//-------------- End of Click To Move Variable --------------
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UDamageTextWidgetComponent> DamageTextComponentClass;
 };

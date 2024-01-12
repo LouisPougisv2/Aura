@@ -30,6 +30,7 @@ public:
 
 	//Combat Interface
 	virtual int32 GetCharacterLevel() const override;
+	virtual void Die() override;
 	//EndCombat Interface
 
 	UPROPERTY(BlueprintAssignable)
@@ -38,12 +39,21 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bShouldHitReact = false;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed = 400.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float LifeSpan = 5.0f;
 	
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
+	void OnHitReactTagChanged(const FGameplayTag GameplayTag, int32 NewTagCount);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;

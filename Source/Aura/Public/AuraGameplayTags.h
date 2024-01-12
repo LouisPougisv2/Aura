@@ -35,6 +35,9 @@ public:
 	FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxMana;
 
+	FGameplayTag Damage;
+	FGameplayTag Effects_HitReact;
+
 	/*
 	 * Inputs Tags
 	 */

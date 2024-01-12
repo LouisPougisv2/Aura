@@ -42,6 +42,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
 	TSubclassOf<class UGameplayEffect> VitalAttributesGameplayEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	TArray<TSubclassOf<class UGameplayAbility>> CommonAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults | Damage")
+	TObjectPtr<UCurveTable> DamageCalculationCoefficient;
+	
 	UFUNCTION(BlueprintCallable)
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass);
 };
