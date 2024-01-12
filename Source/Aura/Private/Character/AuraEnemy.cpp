@@ -60,7 +60,10 @@ void AAuraEnemy::BeginPlay()
 	
 	InitAbilityActorInfo();
 	//Gives the abilities as long as those abilities are in the Data Asset
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	if(HasAuthority())
+	{
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
 
 	//Setting the Progress bar user widget controller
 	UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthWidgetComponent->GetUserWidgetObject());
@@ -83,7 +86,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		AuraASC->OnAbilityInfoSet();
 	}
-	InitializeDefaultAttributes();
+	if(HasAuthority())
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const
