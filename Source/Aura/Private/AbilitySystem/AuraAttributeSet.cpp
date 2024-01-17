@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -125,8 +126,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				//Owner of this Attribute Set
 				EffectProperties.TargetAbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 			}
-
-			ShowFloatingText(EffectProperties, LocalIncomingDamage);
+			
+			ShowFloatingText(EffectProperties, LocalIncomingDamage, UAuraAbilitySystemLibrary::IsBlockedHit(EffectProperties.EffectContextHandle), UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle));
 		}
 	}
 }
@@ -164,7 +165,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	}
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& InEffectProperties, float Damage) const
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& InEffectProperties, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
 	if(InEffectProperties.SourceCharacter != InEffectProperties.TargetCharacter)
 	{
