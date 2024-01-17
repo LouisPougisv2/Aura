@@ -19,6 +19,9 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 	///** Returns the actual struct used for serialization */
 	virtual UScriptStruct* GetScriptStruct() const override;
 
+	/** Creates a copy of this context, used to duplicate for later modifications */
+	virtual FAuraGameplayEffectContext* Duplicate() const override;
+
 	/** Custom serialization */
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 
@@ -30,4 +33,14 @@ protected:
 	
 	UPROPERTY()
 	bool bIsCriticalHit = false;
+};
+
+template<>
+struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true
+	};
 };
