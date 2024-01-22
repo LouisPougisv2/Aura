@@ -172,7 +172,7 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& InEffectProper
 		AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(InEffectProperties.SourceCharacter->Controller);
 		if(IsValid(PlayerController))
 		{
-			PlayerController->ShowDamageNumber(Damage, InEffectProperties.TargetCharacter);
+			PlayerController->ShowDamageNumber(Damage, InEffectProperties.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 	}
 }
