@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const struc
 /**
  * 
  */
-UCLASS(BlueprintType, BLueprintable)
+UCLASS(BlueprintType, Blueprintable)
 class AURA_API UAttributesMenuWidgetController : public UAuraWidgetController
 {
 	GENERATED_BODY()
