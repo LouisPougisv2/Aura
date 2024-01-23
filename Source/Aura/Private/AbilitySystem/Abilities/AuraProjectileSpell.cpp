@@ -23,7 +23,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		{
 			const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
 			FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-			Rotation.Pitch = 0.0f;	//Making the projectile fly parallel to the ground 
+			//Rotation.Pitch = 0.0f;	//Making the projectile fly parallel to the ground 
 
 			FTransform SpawnTransform;
 			SpawnTransform.SetLocation(SocketLocation);
@@ -49,6 +49,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			}
 			
 			Projectile->GameplayEffectSpecHandle = SpecHandle;
+			Projectile->SetInstigator(Cast<APawn>( GetAvatarActorFromActorInfo()));
 			Projectile->FinishSpawning(SpawnTransform);
 		}
 	}
