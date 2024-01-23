@@ -17,6 +17,11 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(GetDamageStatics().CriticalHitChanceDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CriticalHitDamagesDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CriticalHitResistanceDef);
+	
+	RelevantAttributesToCapture.Add(GetDamageStatics().FireResistanceDef);
+	RelevantAttributesToCapture.Add(GetDamageStatics().LightningResistanceDef);
+	RelevantAttributesToCapture.Add(GetDamageStatics().ArcaneResistanceDef);
+	RelevantAttributesToCapture.Add(GetDamageStatics().PhysicalResistanceDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -42,7 +47,20 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float Damage = 0.0f;
 	for (const TTuple<FGameplayTag, FGameplayTag>& GameplayTagPair : FAuraGameplayTags::Get().DamageTypesToResistances)
 	{
+		const FGameplayTag DamageTypeTag = GameplayTagPair.Key;
+		const FGameplayTag ResistanceTag = GameplayTagPair.Value;
+
+		checkf(GetDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs doesn't contain Tag: [%s] in ExecCalc_Damage"), *ResistanceTag.ToString());
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = GetDamageStatics().TagsToCaptureDefs[ResistanceTag];
+
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(GameplayTagPair.Key);
+
+		float Resistance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParameters, Resistance);
+		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
+
+		DamageTypeValue *= ( 100.f - Resistance ) / 100.f;
+		
 		Damage += DamageTypeValue;
 	}
 	
