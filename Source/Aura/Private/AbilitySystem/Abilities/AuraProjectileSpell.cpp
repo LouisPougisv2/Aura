@@ -23,7 +23,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		{
 			const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
 			FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-			Rotation.Pitch = 0.0f;	//Making the projectile fly parallel to the ground 
+			//Rotation.Pitch = 0.0f;	//Making the projectile fly parallel to the ground 
 
 			FTransform SpawnTransform;
 			SpawnTransform.SetLocation(SocketLocation);
@@ -33,13 +33,23 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 				Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 			const UAbilitySystemComponent* SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-			const FGameplayEffectSpecHandle SpecHandle = SourceAbilitySystemComponent->MakeOutgoingSpec(DamageGameplayEffectClass, GetAbilityLevel(), SourceAbilitySystemComponent->MakeEffectContext());
+
+			FGameplayEffectContextHandle GameplayEffectContextHandle = SourceAbilitySystemComponent->MakeEffectContext();
+			GameplayEffectContextHandle.SetAbility(this); //Will set AbilityInstanceNotReplicated, AbilityCDO & AbilityLevel for this context handle
+			GameplayEffectContextHandle.AddSourceObject(Projectile); // Object this effect was created from
+			
+			const FGameplayEffectSpecHandle SpecHandle = SourceAbilitySystemComponent->MakeOutgoingSpec(DamageGameplayEffectClass, GetAbilityLevel(), GameplayEffectContextHandle);
 
 			FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
-			const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+
+			for (auto& DamageTypePair : DamageTypes)
+			{
+				const float ScaledDamage = DamageTypePair.Value.GetValueAtLevel(GetAbilityLevel());
+				UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageTypePair.Key, ScaledDamage);
+			}
 			
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, AuraGameplayTags.Damage, ScaledDamage);
 			Projectile->GameplayEffectSpecHandle = SpecHandle;
+			Projectile->SetInstigator(Cast<APawn>( GetAvatarActorFromActorInfo()));
 			Projectile->FinishSpawning(SpawnTransform);
 		}
 	}

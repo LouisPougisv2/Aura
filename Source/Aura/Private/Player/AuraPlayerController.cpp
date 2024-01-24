@@ -22,14 +22,14 @@ AAuraPlayerController::AAuraPlayerController()
 	SplinePath = CreateDefaultSubobject<USplineComponent>(TEXT("SplinePath"));
 }
 
-void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
 {
 	if(!IsValid(TargetCharacter) || !DamageTextComponentClass || !IsLocalController()) return;
 
 	UDamageTextWidgetComponent* DamageText = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
 	DamageText->RegisterComponent();
 	DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	DamageText->SetDamageText(DamageAmount);
+	DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
 
 	//As we want the DamageText to play its animation WITHOUT following the Character, we can detach it
 	DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
