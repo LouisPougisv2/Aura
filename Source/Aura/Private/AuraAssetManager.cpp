@@ -21,8 +21,6 @@ void UAuraAssetManager::StartInitialLoading()
 	//Perfect place to call the InitializeGameplayTags function from our Gameplay Tags Singleton
 	FAuraGameplayTags::InitializeNativeGameplayTags();
 
-	InitializeStaticTagsToCaptureDefsMap();
-
 	//REQUIRED OT US TARGET DATA as it initializes TargetDataScriptStructCache (used by FGameplayAbilityTargetData_SingleTargetHit in UTargetDataUnderMouseAbilityTask)
 	//Not required any more since UE5.3
 	UAbilitySystemGlobals::Get().InitGlobalData();
