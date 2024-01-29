@@ -45,7 +45,10 @@ protected:
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<class UGameplayEffect> GameplayEffectClass);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Effects")
-	bool bShouldDestroyOnEffectRemoval = true;
+	bool bDestroyOnEffectApplication = true;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Effects")
+	bool bApplyEffectToEnemies = false;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Effects")
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
