@@ -197,9 +197,13 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					//DrawDebugSphere(GetWorld(), PointLocation, 8.0f, 8, FColor::Orange, false, 4.0f);
 				}
 
-				//Fix issue when clicking at the base of a pilar where the CachedDestination below the cursor wasn't registered as a valid Navigation Point!
-				CachedDestination = NavigationPath->PathPoints[NavigationPath->PathPoints.Num() - 1];
-				bIsAutoRunning = true;
+				if(NavigationPath->PathPoints.Num() > 0)
+				{
+					//Fix issue when clicking at the base of a pilar where the CachedDestination below the cursor wasn't registered as a valid Navigation Point!
+					CachedDestination = NavigationPath->PathPoints[NavigationPath->PathPoints.Num() - 1];
+					bIsAutoRunning = true;
+				}
+				
 			}
 			
 		}
