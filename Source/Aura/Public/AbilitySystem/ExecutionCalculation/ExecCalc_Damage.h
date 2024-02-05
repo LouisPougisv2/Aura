@@ -41,10 +41,7 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);
-	}
-
-	void InitializeTagsToCaptureDefsMap()
-	{
+		
 		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 		
 		TagsToCaptureDefs.Empty();
@@ -61,15 +58,10 @@ struct AuraDamageStatics
 	}
 };
 
-static AuraDamageStatics& GetDamageStatics()
+static const AuraDamageStatics& GetDamageStatics()
 {
 	static AuraDamageStatics DamageStatics;
 	return DamageStatics;
-}
-
-static void InitializeStaticTagsToCaptureDefsMap()
-{
-	GetDamageStatics().InitializeTagsToCaptureDefsMap();
 }
 
 /**
