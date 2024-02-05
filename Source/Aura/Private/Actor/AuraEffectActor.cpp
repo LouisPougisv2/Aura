@@ -108,7 +108,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		ActiveEffectHandlesMap.Add(ActiveGameplayEffectHandle, TargetActorASC);
 	}
 
-	if(!bIsDurationPolicyInfinite)
+	if(!bIsDurationPolicyInfinite && bDestroyOnEffectApplication)
 	{
 		Destroy();
 	}
