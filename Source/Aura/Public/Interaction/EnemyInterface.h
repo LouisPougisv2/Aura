@@ -28,4 +28,11 @@ public:
 
 	UFUNCTION()
 	virtual void UnHighlightActors() = 0;
+
+	//BlueprintEvents are not virtual (they auto generate a version that can be overriden)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };
