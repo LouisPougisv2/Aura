@@ -85,7 +85,7 @@ void AAuraEnemy::BeginPlay()
 	//Gives the abilities as long as those abilities are in the Data Asset
 	if(HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	//Setting the Progress bar user widget controller

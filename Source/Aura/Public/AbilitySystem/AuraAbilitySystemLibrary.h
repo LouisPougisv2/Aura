@@ -29,7 +29,7 @@ public:
 
 	//Initialize based Attributes based on the Character class and the level
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | Character Class Defaults")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, class UAbilitySystemComponent* AbilitySystemComponent);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, class UAbilitySystemComponent* AbilitySystemComponent, ECharacterClass CharacterClass);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | Character Class Defaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);

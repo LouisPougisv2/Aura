@@ -50,6 +50,8 @@ public:
 	
 	FGameplayTag Effects_HitReact;
 
+	FGameplayTag Abilities_Attack;
+
 	/*
 	 * Inputs Tags
 	 */
