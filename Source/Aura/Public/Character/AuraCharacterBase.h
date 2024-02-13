@@ -32,7 +32,7 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
-	virtual FVector GetCombatSocketLocation() override;
+	virtual FVector GetCombatSocketLocation_Implementation() override;
 	
 	UPROPERTY(EditAnywhere, Category = "Combat" )
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
