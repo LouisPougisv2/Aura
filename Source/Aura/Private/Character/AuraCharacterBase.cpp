@@ -37,6 +37,16 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation()
 	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);
 }
 
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bIsDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatarActor_Implementation()
+{
+	return this;
+}
+
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
@@ -68,6 +78,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	//The capsule won't block other characters or other objects to go through it
 
 	Dissolve();
+
+	bIsDead = true;
 }
 
 void AAuraCharacterBase::BeginPlay()

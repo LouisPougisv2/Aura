@@ -33,5 +33,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	//BlueprintNativeEvent so we can have something BlueprintCallable and also have a C++ implementation
 	UAnimMontage* GetHitReactMontage();
-	
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetAvatarActor();
 };
