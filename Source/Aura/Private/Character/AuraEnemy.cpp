@@ -161,5 +161,8 @@ void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag GameplayTag, int32 NewT
 	bShouldHitReact = NewTagCount > 0;
 	
 	GetCharacterMovement()->MaxWalkSpeed = bShouldHitReact ? 0.0f : BaseWalkSpeed;
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bShouldHitReact);
+	if(IsValid(AuraAIController) && IsValid(AuraAIController->GetBlackboardComponent()))
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bShouldHitReact);
+	}
 }
