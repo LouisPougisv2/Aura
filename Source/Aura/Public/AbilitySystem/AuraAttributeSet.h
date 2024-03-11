@@ -31,7 +31,7 @@ struct FEffectProperties
 	TObjectPtr<AActor> SourceAvatarActor = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<APlayerController> SourcePlayerController = nullptr;
+	TObjectPtr<AController> SourcePlayerController = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> SourceCharacter = nullptr;
@@ -43,7 +43,7 @@ struct FEffectProperties
 	TObjectPtr<AActor> TargetAvatarActor = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<APlayerController> TargetPlayerController = nullptr;
+	TObjectPtr<AController> TargetPlayerController = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> TargetCharacter = nullptr;

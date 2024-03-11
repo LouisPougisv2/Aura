@@ -157,7 +157,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		{
 			if(const APawn* Pawn = Cast<APawn>(EffectProperties.SourceAvatarActor))
 			{
-				EffectProperties.SourcePlayerController = Cast<APlayerController>(Pawn->GetController());
+				EffectProperties.SourcePlayerController = Pawn->GetController();
 			}
 		}
 
@@ -181,8 +181,12 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& InEffectProper
 {
 	if(InEffectProperties.SourceCharacter != InEffectProperties.TargetCharacter)
 	{
-		AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(InEffectProperties.SourceCharacter->Controller);
-		if(IsValid(PlayerController))
+		if(AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(InEffectProperties.SourceCharacter->Controller))
+		{
+			PlayerController->ShowDamageNumber(Damage, InEffectProperties.TargetCharacter, bBlockedHit, bCriticalHit);
+			return;
+		}
+		if(AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(InEffectProperties.TargetCharacter->Controller))
 		{
 			PlayerController->ShowDamageNumber(Damage, InEffectProperties.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
