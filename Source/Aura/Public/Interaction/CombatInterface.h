@@ -37,7 +37,7 @@ public:
 	virtual int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetCombatSocketLocation();
+	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);
 	
 	virtual void Die() = 0;
 
