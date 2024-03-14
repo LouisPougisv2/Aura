@@ -75,6 +75,16 @@ void AAuraEnemy::Die()
 	Super::Die();
 }
 
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -85,7 +95,7 @@ void AAuraEnemy::BeginPlay()
 	//Gives the abilities as long as those abilities are in the Data Asset
 	if(HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	//Setting the Progress bar user widget controller
@@ -151,5 +161,8 @@ void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag GameplayTag, int32 NewT
 	bShouldHitReact = NewTagCount > 0;
 	
 	GetCharacterMovement()->MaxWalkSpeed = bShouldHitReact ? 0.0f : BaseWalkSpeed;
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bShouldHitReact);
+	if(IsValid(AuraAIController) && IsValid(AuraAIController->GetBlackboardComponent()))
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bShouldHitReact);
+	}
 }

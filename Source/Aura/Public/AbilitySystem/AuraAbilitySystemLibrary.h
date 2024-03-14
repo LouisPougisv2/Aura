@@ -29,7 +29,7 @@ public:
 
 	//Initialize based Attributes based on the Character class and the level
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | Character Class Defaults")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, class UAbilitySystemComponent* AbilitySystemComponent);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, class UAbilitySystemComponent* AbilitySystemComponent, ECharacterClass CharacterClass);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | Character Class Defaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
@@ -47,4 +47,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayEffect")
 	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsCritical);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
+	static void GetAlivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
+	static bool AreFriends(AActor* FirstActor, AActor* SecondActor);
 };
