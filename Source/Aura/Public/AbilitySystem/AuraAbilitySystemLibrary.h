@@ -50,4 +50,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
 	static void GetAlivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
+	static bool AreFriends(AActor* FirstActor, AActor* SecondActor);
 };

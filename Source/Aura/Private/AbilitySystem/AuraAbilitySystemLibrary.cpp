@@ -159,3 +159,11 @@ void UAuraAbilitySystemLibrary::GetAlivePlayersWithinRadius(const UObject* World
 		}
 	}
 }
+
+bool UAuraAbilitySystemLibrary::AreFriends(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool bFirstActorIsPlayer = FirstActor->ActorHasTag(FName("Player"));
+	const bool bSecondActorIsPlayer = SecondActor->ActorHasTag(FName("Player"));
+
+	return (bFirstActorIsPlayer && bSecondActorIsPlayer) || (!bFirstActorIsPlayer && !bSecondActorIsPlayer);
+}
