@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
@@ -52,6 +53,12 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	if(Other == GetInstigator()) return;
 	
 	if (GameplayEffectSpecHandle.Data.IsValid() && GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == Other)
+	{
+		return;
+	}
+
+	//Preventing enemy to damage each other (preventing players to hit each other too)
+	if(GameplayEffectSpecHandle.Data.IsValid() && UAuraAbilitySystemLibrary::AreFriends(GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), Other))
 	{
 		return;
 	}
