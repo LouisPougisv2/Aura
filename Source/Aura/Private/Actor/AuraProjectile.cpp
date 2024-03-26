@@ -52,7 +52,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if(Other == GetInstigator()) return;
 	
-	if (GameplayEffectSpecHandle.Data.IsValid() && GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == Other)
+	if (!GameplayEffectSpecHandle.Data.IsValid() || GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == Other)
 	{
 		return;
 	}
