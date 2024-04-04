@@ -162,6 +162,8 @@ void UAuraAbilitySystemLibrary::GetAlivePlayersWithinRadius(const UObject* World
 
 bool UAuraAbilitySystemLibrary::AreFriends(AActor* FirstActor, AActor* SecondActor)
 {
+	if(!FirstActor->Implements<UCombatInterface>() || !SecondActor->Implements<UCombatInterface>()) return false;
+	
 	const bool bFirstActorIsPlayer = FirstActor->ActorHasTag(FName("Player"));
 	const bool bSecondActorIsPlayer = SecondActor->ActorHasTag(FName("Player"));
 
