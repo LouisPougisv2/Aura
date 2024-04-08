@@ -164,8 +164,7 @@ bool UAuraAbilitySystemLibrary::AreFriends(AActor* FirstActor, AActor* SecondAct
 {
 	if(!FirstActor->Implements<UCombatInterface>() || !SecondActor->Implements<UCombatInterface>()) return false;
 	
-	const bool bFirstActorIsPlayer = FirstActor->ActorHasTag(FName("Player"));
-	const bool bSecondActorIsPlayer = SecondActor->ActorHasTag(FName("Player"));
-
-	return (bFirstActorIsPlayer && bSecondActorIsPlayer) || (!bFirstActorIsPlayer && !bSecondActorIsPlayer);
+	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
+	const bool bBothAreEnemies = FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy"));
+	return bBothArePlayers || bBothAreEnemies;
 }
