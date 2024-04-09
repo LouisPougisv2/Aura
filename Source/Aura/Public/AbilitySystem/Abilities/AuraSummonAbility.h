@@ -20,7 +20,7 @@ public:
 	TArray<FVector> GetSpawnLocations();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
-	int32 NumMinionsToSpawn = 3;
+	int32 NumMinionsToSpawn = 4;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	TArray<TSubclassOf<APawn>> MinionClasses;
@@ -32,5 +32,5 @@ public:
 	float MaxSpawnDistance = 250.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
-	float SpawnConeSpread = 90.0f;
+	float SpawnConeSpread = 120.0f;
 };
