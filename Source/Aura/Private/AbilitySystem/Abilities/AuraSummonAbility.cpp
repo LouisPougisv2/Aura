@@ -32,8 +32,14 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocations()
 		//UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.0f, FLinearColor::Red, 4.0f);\
 		//DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 10.0f, 12.0f, FColor::Orange, false, 5.0f);
 		//DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 10.0f, 12.0f, FColor::Purple,false, 5.0f);
-		DrawDebugSphere(GetWorld(), ChosenLocation, 10.0f, 12.0f, FColor::Green,false, 2.0f);
+		//DrawDebugSphere(GetWorld(), ChosenLocation, 10.0f, 12.0f, FColor::Green,false, 2.0f);
 	}
 	
 	return SpawnLocations;
+}
+
+TSubclassOf<APawn> UAuraSummonAbility::GetRandomMinionClass()
+{
+	if(MinionClasses.Num() <= 0) return nullptr;
+	return MinionClasses[FMath::RandRange(0, MinionClasses.Num() - 1)];
 }
