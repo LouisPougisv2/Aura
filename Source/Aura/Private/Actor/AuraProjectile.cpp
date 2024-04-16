@@ -107,5 +107,6 @@ void AAuraProjectile::ImpactSoundAndEffect()
 	{
 		LoopingSoundComponent->Stop();
 	}
+	bHit = true;
 }
 
