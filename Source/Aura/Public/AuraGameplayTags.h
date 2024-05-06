@@ -63,6 +63,8 @@ public:
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
 
+	FGameplayTag Ability_Fire_FireBolt;
+
 	/*
 	 * Inputs Tags
 	 */

@@ -1,6 +1,4 @@
 // Copyright Louis Pougis, All Rights Reserved.
-
-
 #include "AbilitySystem/Datas/UAttributeInfo.h"
 
 FAuraAttributeInfo UAttributeInfo::FindAttributeInfoForTag(const FGameplayTag& GameplayTag, bool bLogNotfound) const
@@ -14,7 +12,7 @@ FAuraAttributeInfo UAttributeInfo::FindAttributeInfoForTag(const FGameplayTag& G
 	}
 	if(bLogNotfound)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attribute with Tag [%s] not found on AttributesInfo [%s]"), *GameplayTag.ToString(), *GetNameSafe(this));
+		UE_LOG(LogTemp, Error, TEXT("Attribute with Tag [%s] not found on AttributesInfo [%s]"), *GameplayTag.ToString(), *GetNameSafe(this));
 	}
 	return FAuraAttributeInfo();
 }
