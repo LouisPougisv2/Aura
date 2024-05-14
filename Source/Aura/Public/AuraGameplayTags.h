@@ -65,6 +65,8 @@ public:
 
 	FGameplayTag Ability_Fire_FireBolt;
 
+	FGameplayTag Cooldown_Fire_FireBolt;
+
 	/*
 	 * Inputs Tags
 	 */
