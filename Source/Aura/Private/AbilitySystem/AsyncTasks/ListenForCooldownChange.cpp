@@ -30,7 +30,7 @@ void UListenForCooldownChange::OnEndTask()
 {
 	if(!IsValid(ASC)) return;
 	
-	//Removing the callback from it's delegate
+	//Removing the callback from its delegate
 	ASC->RegisterGameplayTagEvent(CoolDownTag, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
 	SetReadyToDestroy();

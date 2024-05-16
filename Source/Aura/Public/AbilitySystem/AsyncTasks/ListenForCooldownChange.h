@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FListenForCooldownSignature, float, 
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, meta = (ExposedAsyncProxy = "AsyncTask"))
 class AURA_API UListenForCooldownChange : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
