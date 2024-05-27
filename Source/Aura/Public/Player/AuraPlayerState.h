@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "AbilitySystem/Datas/LevelUpInfo.h"
 #include "GameFramework/PlayerState.h"
 #include "AuraPlayerState.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatsChangedSignature, int32 /*NewXP*/);
 
 /**
  * Player State is the place where our Ability System Component & Attribute Set will live
@@ -24,6 +27,19 @@ public:
 	class UAttributeSet * GetAttributeSet() const {return AttributeSet; };
 
 	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
+	FORCEINLINE int32 GetPlayerXP() const { return XP; }
+
+	void AddToLevel(int32 InLevel);
+	void SetLevel(int32 InLevel);
+	
+	void AddToXP(int32 InXP);
+	void SetXP(int32 InXP);
+
+	FOnPlayerStatsChangedSignature OnXPChangedDelegate;
+	FOnPlayerStatsChangedSignature OnLevelChangedDelegate;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<ULevelUpInfo> PlayerLevelUpInfo;
 	
 protected:
 
@@ -38,6 +54,12 @@ private:
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
+	int32 XP = 1;
+
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
+
+	UFUNCTION()
+	void OnRep_XP(int32 OldXP);
 };

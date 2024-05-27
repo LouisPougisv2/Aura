@@ -29,10 +29,10 @@ class AURA_API ULevelUpInfo : public UDataAsset
 {
 	GENERATED_BODY()
 
-protected:
+public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FAuraLevelUpInfo> LevelUpInformations;
 
-	int32 FindLevelForExp(int32 Exp);
+	int32 FindLevelForExp(int32 Exp) const;
 };

@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/Datas/LevelUpInfo.h"
 
-int32 ULevelUpInfo::FindLevelForExp(int32 Exp)
+int32 ULevelUpInfo::FindLevelForExp(int32 Exp) const
 {
 	int32 CurrentPlayerLevel = 1;
 	bool bIsSearching = true;
