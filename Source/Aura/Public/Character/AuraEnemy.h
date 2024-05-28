@@ -60,9 +60,6 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 	void OnHitReactTagChanged(const FGameplayTag GameplayTag, int32 NewTagCount);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	//Not replicated because we'll check the level only on the server for AI controlled enemies
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")

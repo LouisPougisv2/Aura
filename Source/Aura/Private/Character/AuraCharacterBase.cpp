@@ -102,6 +102,11 @@ void AAuraCharacterBase::DecrementMinionCount_Implementation(int32 Amount)
 	MinionCount -= Amount;
 }
 
+ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
+}
+
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
