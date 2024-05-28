@@ -44,6 +44,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.4"), FString("Input Tag for Numeric Key 4"));
 
 	/*
+	 * Meta Attributes Tags
+	 */
+
+	GameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Meta.IncomingXP"), FString("Tag for Incoming XP Meta Attribute"));
+	/*
 	 * Damage Types
 	 */
 	

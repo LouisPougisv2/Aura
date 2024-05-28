@@ -110,6 +110,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
+	
+	//Handling Incoming Damage
 	if(Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		//After being used, the IncomingDamage attribute data has to be consumed (zeroed out)
@@ -140,6 +142,18 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			}
 			
 			ShowFloatingText(EffectProperties, LocalIncomingDamage, UAuraAbilitySystemLibrary::IsBlockedHit(EffectProperties.EffectContextHandle), UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle));
+		}
+	}
+
+	//Handling incoming XP
+	if(Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.0f);
+
+		if(LocalIncomingXP > 0.0f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Incoming XP : %f"), LocalIncomingXP);
 		}
 	}
 }
