@@ -10,6 +10,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
@@ -152,9 +153,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		const float LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.0f);
 
-		if(LocalIncomingXP > 0.0f)
+		//TODO : Check if we should level up
+		if(EffectProperties.SourceCharacter->Implements<UPlayerInterface>())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Incoming XP : %f"), LocalIncomingXP);
+			IPlayerInterface::Execute_AddToXp(EffectProperties.SourceCharacter, LocalIncomingXP);	
 		}
 	}
 }
