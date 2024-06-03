@@ -20,10 +20,11 @@ public:
 	AAuraPlayerCharacter();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	virtual int32 GetCharacterLevel() const override;
+	virtual int32 GetCharacterLevel_Implementation() const override;
 	
 	//Player Interface
 	virtual void AddToXp_Implementation(int32 InXP) override;
+	virtual void LevelUp_Implementation() override;
 	//End Player Interface
 
 protected:

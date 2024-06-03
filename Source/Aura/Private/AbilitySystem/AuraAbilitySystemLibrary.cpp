@@ -86,12 +86,11 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 
 	//Giving all start up ability to Enemy, based on his CharacterClass
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
-	const ICombatInterface* CombatInterface = CastChecked<ICombatInterface>(AbilitySystemComponent->GetAvatarActor());
-	if(CombatInterface)
+	if(AbilitySystemComponent->GetAvatarActor()->Implements<UCombatInterface>())
 	{
 		for (TSubclassOf<UGameplayAbility> CommonDefaultAbility : DefaultInfo.CommonDefaultAbilities)
         {
-        	FGameplayAbilitySpec CommonDefaultAbilitySpec = FGameplayAbilitySpec(CommonDefaultAbility, CombatInterface->GetCharacterLevel());
+        	FGameplayAbilitySpec CommonDefaultAbilitySpec = FGameplayAbilitySpec(CommonDefaultAbility, ICombatInterface::Execute_GetCharacterLevel(AbilitySystemComponent->GetAvatarActor()));
         	AbilitySystemComponent->GiveAbility(CommonDefaultAbilitySpec);
         }
 	}
