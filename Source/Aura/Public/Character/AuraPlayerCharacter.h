@@ -34,7 +34,19 @@ public:
 	virtual void LevelUp_Implementation() override;
 	//End Player Interface
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
+
 protected:
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UCameraComponent> TopDownCameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<class USpringArmComponent> CameraBoom;
+
 	virtual void InitAbilityActorInfo() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_LevelUpParticle() const;
 };
