@@ -80,7 +80,7 @@ protected:
 	void OnXPChanged(int32 NewXP);
 	
 	UFUNCTION()
-	void OnLevelChanged(int32 NewXP);
+	void OnLevelChanged(int32 NewLevel);
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& GameplayTag);

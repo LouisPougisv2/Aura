@@ -94,9 +94,9 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 	}
 }
 
-void UOverlayWidgetController::OnLevelChanged(int32 NewXP)
+void UOverlayWidgetController::OnLevelChanged(int32 NewLevel)
 {
-	OnPlayerLevelChangedDelegate.Broadcast(NewXP);
+	OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
 }
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent)
