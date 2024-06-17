@@ -86,12 +86,11 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 
 	//Giving all start up ability to Enemy, based on his CharacterClass
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
-	const ICombatInterface* CombatInterface = CastChecked<ICombatInterface>(AbilitySystemComponent->GetAvatarActor());
-	if(CombatInterface)
+	if(AbilitySystemComponent->GetAvatarActor()->Implements<UCombatInterface>())
 	{
 		for (TSubclassOf<UGameplayAbility> CommonDefaultAbility : DefaultInfo.CommonDefaultAbilities)
         {
-        	FGameplayAbilitySpec CommonDefaultAbilitySpec = FGameplayAbilitySpec(CommonDefaultAbility, CombatInterface->GetCharacterLevel());
+        	FGameplayAbilitySpec CommonDefaultAbilitySpec = FGameplayAbilitySpec(CommonDefaultAbility, ICombatInterface::Execute_GetCharacterLevel(AbilitySystemComponent->GetAvatarActor()));
         	AbilitySystemComponent->GiveAbility(CommonDefaultAbilitySpec);
         }
 	}
@@ -167,4 +166,14 @@ bool UAuraAbilitySystemLibrary::AreFriends(AActor* FirstActor, AActor* SecondAct
 	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
 	const bool bBothAreEnemies = FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy"));
 	return bBothArePlayers || bBothAreEnemies;
+}
+
+int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel)
+{
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if(!IsValid(CharacterClassInfo)) return 0;
+
+	const FCharacterClassDefaultInfo& Info = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
+	const float XPReward = Info.XPReward.GetValueAtLevel(CharacterLevel);
+	return static_cast<int32>(XPReward);
 }

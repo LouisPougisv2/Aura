@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "NiagaraSystem.h"
 #include "Abilities/GameplayAbility.h"
+#include "AbilitySystem/Datas/CharacterClassInfo.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
@@ -33,6 +34,7 @@ public:
 	virtual int32 GetMinionCount_Implementation() override;
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	virtual void DecrementMinionCount_Implementation(int32 Amount) override;
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	//End Combat Interface
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -83,6 +85,9 @@ protected:
 
 	void AddCharacterAbilities();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
 	/* Dissolve Effects*/
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -113,9 +118,11 @@ protected:
 	
 private:
 
-	//Temporary
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartUpPassiveAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;

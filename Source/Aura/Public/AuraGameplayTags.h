@@ -77,6 +77,11 @@ public:
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
+
+	/*
+	 * Meta attributes Tags
+	 */
+	FGameplayTag Attributes_Meta_IncomingXP;
 	
 private:
 

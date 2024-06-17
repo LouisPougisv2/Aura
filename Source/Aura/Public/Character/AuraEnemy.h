@@ -30,7 +30,7 @@ public:
 	//End enemy interface
 
 	//Combat Interface
-	virtual int32 GetCharacterLevel() const override;
+	virtual int32 GetCharacterLevel_Implementation() const override;
 	virtual void Die() override;
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
@@ -60,9 +60,6 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 	void OnHitReactTagChanged(const FGameplayTag GameplayTag, int32 NewTagCount);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	//Not replicated because we'll check the level only on the server for AI controlled enemies
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
