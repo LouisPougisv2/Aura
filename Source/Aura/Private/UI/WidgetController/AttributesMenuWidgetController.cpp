@@ -16,6 +16,10 @@ void UAttributesMenuWidgetController::BroadcastInitialValues()
 	{
 		BroadcastAttributeInfo(Tag.Key, Tag.Value());
 	}
+
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	OnPlayerAttributePointChangedDelegate.Broadcast(AuraPlayerState->GetPlayerAttributePoints());
+	OnPlayerSpellPointsChangedDelegate.Broadcast(AuraPlayerState->GetPlayerSpellPoints());
 }
 
 void UAttributesMenuWidgetController::BindCallbacksToDependencies()
