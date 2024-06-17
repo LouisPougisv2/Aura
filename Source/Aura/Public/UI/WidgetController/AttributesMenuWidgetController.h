@@ -7,8 +7,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "AttributesMenuWidgetController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const struct FAuraAttributeInfo&,
-                                            AuraAttributeInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const struct FAuraAttributeInfo&, AuraAttributeInfo);
 
 /**
  * 
@@ -25,6 +24,12 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "GAS | Attributes")
 	FAttributeInfoSignature AttributeInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS | Points")
+	FOnPlayerStatChangedSignature OnPlayerAttributePointChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS | Points")
+	FOnPlayerStatChangedSignature OnPlayerSpellPointsChangedDelegate;
 
 protected:
 
