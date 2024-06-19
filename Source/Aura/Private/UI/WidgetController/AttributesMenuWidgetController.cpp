@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/AttributesMenuWidgetController.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Datas/UAttributeInfo.h"
 #include "Player/AuraPlayerState.h"
@@ -50,6 +51,12 @@ void UAttributesMenuWidgetController::BindCallbacksToDependencies()
 		{
 			OnPlayerSpellPointsChangedDelegate.Broadcast(SpellPoints);
 		});
+}
+
+void UAttributesMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	auto AuraAbilitySystemComponent = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraAbilitySystemComponent->UpgradeAttribute(AttributeTag);
 }
 
 void UAttributesMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& GameplayAttribute) const

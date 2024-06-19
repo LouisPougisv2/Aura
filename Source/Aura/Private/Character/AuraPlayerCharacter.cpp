@@ -150,6 +150,22 @@ void AAuraPlayerCharacter::LevelUp_Implementation()
 	Multicast_LevelUpParticle();
 }
 
+int32 AAuraPlayerCharacter::GetAttributePoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+
+	return AuraPlayerState->GetPlayerAttributePoints();
+}
+
+int32 AAuraPlayerCharacter::GetSpellPoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+
+	return AuraPlayerState->GetPlayerSpellPoints();
+}
+
 int32 AAuraPlayerCharacter::GetXP_Implementation() const
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
