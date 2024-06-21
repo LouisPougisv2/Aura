@@ -3,7 +3,9 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::OnAbilityInfoSet()
 {
@@ -77,6 +79,31 @@ void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
 		}
+	}
+}
+
+void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if(GetAvatarActor()->Implements<UPlayerInterface>() && IPlayerInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
+	{
+		//Upgrading the Attribute from the server
+		ServerUpgradeAttribute(AttributeTag);
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTagToUpgrade)
+{
+	FGameplayEventData Payload;
+	Payload.EventTag = AttributeTagToUpgrade;
+	Payload.EventMagnitude = 1.0f;
+
+	//Sending an event to an actor on the server
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTagToUpgrade, Payload);
+
+	//Decrease by one the number of Attribute point (as it is spent just above)
+	if(GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
 	}
 }
 

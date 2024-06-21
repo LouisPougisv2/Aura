@@ -32,6 +32,8 @@ public:
 	virtual void AddToSpellPoints_Implementation(int32 InSpellPoints) override;
 	virtual int32 FindLevelForXP_Implementation(int32 InXP) const override;
 	virtual void LevelUp_Implementation() override;
+	virtual int32 GetAttributePoints_Implementation() const override;
+	virtual int32 GetSpellPoints_Implementation() const override;
 	//End Player Interface
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
