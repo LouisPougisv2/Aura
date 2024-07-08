@@ -6,6 +6,8 @@
 #include "AuraWidgetController.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);
+
 USTRUCT(BlueprintType)
 struct FWidgetControllerParam
 {
@@ -42,6 +44,16 @@ public :
 	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();
+
+	class AAuraPlayerController* GetAuraPlayerController();
+	class AAuraPlayerState* GetAuraPlayerState();
+	class UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent();
+	class UAuraAttributeSet* GetAuraAttributeSet();
+	
+	UPROPERTY(BlueprintAssignable, Category = "GAS | Messages")
+	FAbilityInfoSignature AbilityInfoDelegate;
+	
+	void BroadcastAbilityInfo();
 	
 protected:
 
@@ -56,5 +68,20 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	//Aura version of the 4 members above
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<AAuraPlayerController> AuraPlayerController;
+
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<AAuraPlayerState> AuraPlayerState;
 	
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<UAuraAttributeSet> AuraAttributeSet;
+	
+	UPROPERTY(EditDefaultsOnly,	BlueprintReadOnly, Category = "Widget Data")
+	TObjectPtr<class UAbilityInfo> AbilityInfo;
 };
