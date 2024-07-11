@@ -7,7 +7,7 @@ void USpellMenuAuraWidgetController::BroadcastInitialValues()
 {
 	Super::BroadcastInitialValues();
 
-	
+	BroadcastAbilityInfo();
 }
 
 void USpellMenuAuraWidgetController::BindCallbacksToDependencies()
