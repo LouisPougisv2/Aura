@@ -35,6 +35,7 @@ public:
 	void ServerUpgradeAttribute(const FGameplayTag& AttributeTagToUpgrade);
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+	static FGameplayTag GetAbilityStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	
 	//Public because our widget controller will need to bind to it
