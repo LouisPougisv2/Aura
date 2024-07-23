@@ -128,8 +128,7 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 				AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 				GiveAbility(AbilitySpec);
 				MarkAbilitySpecDirty(AbilitySpec); //Force an ability spec to be replicated now instead of at the next update
-
-				//Todo : add broadcast to widget controller so it cam update itself
+				ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			}
 		}
 	}
@@ -194,6 +193,12 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const F
 		}
 	}
 	return nullptr;
+}
+
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+{
+	//Broadcast for the widget controller for spell tree update
+ 	OnAbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag);
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()

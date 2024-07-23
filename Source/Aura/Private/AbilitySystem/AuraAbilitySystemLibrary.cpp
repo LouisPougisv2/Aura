@@ -131,7 +131,7 @@ UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObj
 
 UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityClassInfo(const UObject* WorldContextObject)
 {
-	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameInstance(WorldContextObject));
+	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(!IsValid(AuraGameMode)) return nullptr;
 
 	return AuraGameMode->AbilityInfo.Get();

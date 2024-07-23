@@ -9,6 +9,7 @@
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsDelegate, const FGameplayTagContainer& /* Asset Tags */)
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*Ability Tag*/, const FGameplayTag& /*Ability Status*/);
 
 /**
  * 
@@ -47,6 +48,8 @@ public:
 	//Broadcast when we give our abilities
 	FAbilitiesGiven OnAbilitiesGivenDelegate;
 
+	FAbilityStatusChangedDelegate OnAbilityStatusChangedDelegate;
+
 	bool bAreStartupAbilitiesGiven = false;
 	
 protected:
@@ -54,5 +57,8 @@ protected:
 	UFUNCTION(Client, Reliable)
 	void ClientOnGameplayEffectApplied(UAbilitySystemComponent* InAbilitySystemComponent, const FGameplayEffectSpec& InGameplayEffectSpec, FActiveGameplayEffectHandle InActiveGameplayEffectHandle);
 
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
+	
 	virtual void OnRep_ActivateAbilities() override;
 };
