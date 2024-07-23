@@ -5,7 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "AbilitySystem/Datas/AbilityInfo.h"
 #include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::OnAbilityInfoSet()
@@ -110,6 +112,29 @@ void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FG
 	}
 }
 
+void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
+{
+	UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityClassInfo(GetAvatarActor());
+	if(AbilityInfo != nullptr)
+	{
+		for (const FAuraAbilityInfo& Info : AbilityInfo->AbilityInformation)
+		{
+			if(!Info.AbilityTag.IsValid() || Info.LevelRequirement > Level) continue;
+
+			if(GetSpecFromAbilityTag(Info.AbilityTag) == nullptr) //we've stumbled on an ability that we don't have in our ASC
+			{
+				//TODO What if we're level > Info.LevelRequirement && the ability is already unlocked??? does it bring it back to eligible status? 
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
+				AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
+				GiveAbility(AbilitySpec);
+				MarkAbilitySpecDirty(AbilitySpec); //Force an ability spec to be replicated now instead of at the next update
+
+				//Todo : add broadcast to widget controller so it cam update itself
+			}
+		}
+	}
+}
+
 FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
 	if(IsValid(AbilitySpec.Ability))
@@ -151,6 +176,24 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 		}
 	}
 	return FGameplayTag();
+}
+
+FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+	//Locking the ability list, so we don't run into complications with abilities being added or removed while performing our search
+	FScopedAbilityListLock ScopedAbilityListLock(*this);
+	
+	for (FGameplayAbilitySpec& ActivatableAbilitySpec : GetActivatableAbilities())
+	{
+		for(auto Tag : ActivatableAbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if(Tag.MatchesTag(AbilityTag))
+			{
+				return &ActivatableAbilitySpec;
+			}
+		}
+	}
+	return nullptr;
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()

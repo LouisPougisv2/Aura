@@ -75,6 +75,7 @@ public:
 	FGameplayTag Abilities_Type_Passive;
 
 	FGameplayTag Ability_Fire_FireBolt;
+	FGameplayTag Ability_Lightning_Electrocute;
 
 	FGameplayTag Cooldown_Fire_FireBolt;
 
