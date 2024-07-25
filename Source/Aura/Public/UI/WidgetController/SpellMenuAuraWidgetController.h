@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "SpellMenuAuraWidgetController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeSelectedSignature, bool ,bShouldEnableSpellGlobeButton, bool ,bShouldEnableEquipButton);
 /**
  * 
  */
@@ -22,4 +24,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStatChangedSignature OnPlayerSpellPointChanged;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnSpellGlobeSelectedSignature OnSpellGlobeSelectedDelegate;
+
+	UFUNCTION(BlueprintCallable)
+	void OnSpellGlobeSelected(const FGameplayTag& AbilityTag);
+
+private:
+
+	void EnableSpellPointsAndEquipButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton);
 };
