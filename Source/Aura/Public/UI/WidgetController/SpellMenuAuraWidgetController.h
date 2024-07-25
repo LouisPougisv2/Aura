@@ -3,11 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AuraGameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "SpellMenuAuraWidgetController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeSelectedSignature, bool ,bShouldEnableSpellGlobeButton, bool ,bShouldEnableEquipButton);
+
+struct FSelectedAbility
+{
+	FGameplayTag AbilityTag = FGameplayTag();
+	FGameplayTag AbilityStatus = FGameplayTag();
+};
+
 /**
  * 
  */
@@ -33,4 +41,9 @@ public:
 private:
 
 	void EnableSpellPointsAndEquipButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton);
+
+	void UpdateSelectedAbilityUI(const FGameplayTag& AbilityStatus, const int32 SpellPoints);
+	
+	FSelectedAbility CurrentSelectedAbility = FSelectedAbility{FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
+	int32 CurrentSpellPoints;
 };
