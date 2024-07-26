@@ -9,6 +9,8 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AbilitySystem/Datas/AbilityInfo.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/AuraPlayerState.h"
 
 void UAuraAbilitySystemComponent::OnAbilityInfoSet()
 {
@@ -128,7 +130,7 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 				AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 				GiveAbility(AbilitySpec);
 				MarkAbilitySpecDirty(AbilitySpec); //Force an ability spec to be replicated now instead of at the next update
-				ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+				ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, AbilitySpec.Level);
 			}
 		}
 	}
@@ -195,10 +197,47 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const F
 	return nullptr;
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 {
 	//Broadcast for the widget controller for spell tree update
- 	OnAbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag);
+ 	OnAbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag, AbilityLevel);
+}
+
+void UAuraAbilitySystemComponent::ServerSpendSpellPoints_Implementation(const FGameplayTag& SelectedAbilityTag)
+{
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	FGameplayAbilitySpec* SelectedAbilitySpec = GetSpecFromAbilityTag(SelectedAbilityTag);
+
+	//If we don't make it inside the next if, the ability doesn't exist
+	if(SelectedAbilitySpec)
+	{
+		//Updating the ability status
+		FGameplayTag SelectedAbilityStatus = GetAbilityStatusFromSpec(*SelectedAbilitySpec);
+		if(SelectedAbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Locked)) return;
+	
+		if(SelectedAbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+		{
+			SelectedAbilitySpec->DynamicAbilityTags.RemoveTag(GameplayTags.Abilities_Status_Eligible);
+			SelectedAbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_Unlocked);
+		}
+		else if(SelectedAbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) || SelectedAbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+		{
+			//Increasing Ability level like this doesn't cancel the ability if active. If we want to cancel it, we should remove the ability & give it back
+			++SelectedAbilitySpec->Level;
+		}
+		
+		//Spending a Spell Point
+		if(GetAvatarActor()->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+		}
+
+		//Broadcast to the spell menu widget controller
+		ClientUpdateAbilityStatus(SelectedAbilityTag, GetAbilityStatusFromSpec(*SelectedAbilitySpec), SelectedAbilitySpec->Level);
+
+		//Since we've changed the abiliy spec, if we want to force its replication instead of waiting the next update
+		MarkAbilitySpecDirty(*SelectedAbilitySpec);
+	}
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
