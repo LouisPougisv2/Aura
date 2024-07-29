@@ -8,7 +8,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "SpellMenuAuraWidgetController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeSelectedSignature, bool ,bShouldEnableSpellGlobeButton, bool ,bShouldEnableEquipButton);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeSelectedSignature, bool ,bShouldEnableSpellGlobeButton, bool ,bShouldEnableEquipButton, FString, SpellDescription, FString, NextLevelSpellDescription);
 
 struct FSelectedAbility
 {
@@ -45,7 +45,7 @@ private:
 
 	void EnableSpellPointsAndEquipButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton);
 
-	void UpdateSelectedAbilityUI(const FGameplayTag& AbilityStatus, const int32 SpellPoints);
+	void UpdateSelectedAbilityUI(const FGameplayTag& AbilityStatus, const int32 SpellPoints, const FGameplayTag& AbilityTag);
 	
 	FSelectedAbility CurrentSelectedAbility = FSelectedAbility{FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
 	int32 CurrentSpellPoints;

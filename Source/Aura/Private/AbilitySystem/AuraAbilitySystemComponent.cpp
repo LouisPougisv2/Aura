@@ -197,6 +197,26 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const F
 	return nullptr;
 }
 
+bool UAuraAbilitySystemComponent::GetAbilityDescriptionsFromAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription, const UAbilityInfo& AbilityInfo)
+{
+	FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag);
+	if(AbilitySpec)
+	{
+		UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec->Ability.Get());
+		if(AuraAbility)
+		{
+			OutDescription = AuraAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDescription = AuraAbility->GetNextLevelDescription(AbilitySpec->Level + 1);
+			return true;
+		}
+	}
+
+	//We did not find an ability in our activatable abilities
+	OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo.FindAbilityInfoFromTag(AbilityTag).LevelRequirement);
+	OutNextLevelDescription = FString();
+	return false;
+}
+
 void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 {
 	//Broadcast for the widget controller for spell tree update

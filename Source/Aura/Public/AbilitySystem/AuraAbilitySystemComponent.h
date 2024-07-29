@@ -41,6 +41,7 @@ public:
 	static FGameplayTag GetAbilityStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
+	bool GetAbilityDescriptionsFromAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription, const class UAbilityInfo& AbilityInfo);
 	
 	//Public because our widget controller will need to bind to it
 	FEffectAssetTagsDelegate OnEffectAssetTagsDelegate;
