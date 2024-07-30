@@ -79,6 +79,14 @@ void USpellMenuAuraWidgetController::SpendPointButtonsPressed()
 	GetAuraAbilitySystemComponent()->ServerSpendSpellPoints(CurrentSelectedAbility.AbilityTag);
 }
 
+void USpellMenuAuraWidgetController::DeselectGlobe()
+{
+	CurrentSelectedAbility.AbilityTag = FAuraGameplayTags::Get().Abilities_None;
+	CurrentSelectedAbility.AbilityStatus = FAuraGameplayTags::Get().Abilities_Status_Locked;
+	
+	OnSpellGlobeSelectedDelegate.Broadcast(false, false, FString(), FString());
+}
+
 void USpellMenuAuraWidgetController::EnableSpellPointsAndEquipButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)
 {
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();

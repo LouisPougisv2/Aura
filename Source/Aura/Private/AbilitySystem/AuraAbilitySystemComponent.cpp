@@ -212,7 +212,8 @@ bool UAuraAbilitySystemComponent::GetAbilityDescriptionsFromAbilityTag(const FGa
 	}
 
 	//We did not find an ability in our activatable abilities
-	OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo.FindAbilityInfoFromTag(AbilityTag).LevelRequirement);
+	const bool ShouldLeaveDescriptionEmpty = !AbilityTag.IsValid() || AbilityTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_None);
+	OutDescription = ShouldLeaveDescriptionEmpty ? FString() : UAuraGameplayAbility::GetLockedDescription(AbilityInfo.FindAbilityInfoFromTag(AbilityTag).LevelRequirement);
 	OutNextLevelDescription = FString();
 	return false;
 }
