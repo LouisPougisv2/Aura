@@ -74,6 +74,8 @@ protected:
 	UFUNCTION()
 	void OnLevelChanged(int32 NewLevel);
 
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, const FGameplayTag& NewSlot, const FGameplayTag& OldSlot);
+
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& GameplayTag);
 };

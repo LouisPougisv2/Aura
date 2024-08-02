@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Datas/AbilityInfo.h"
@@ -35,6 +36,8 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	
 	if(IsValid(GetAuraAbilitySystemComponent()))
 	{
+		GetAuraAbilitySystemComponent()->OnAbilityEquippedDelegate.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
+
 		if(GetAuraAbilitySystemComponent()->bAreStartupAbilitiesGiven) //Here we know that our Startup Abilities have been given!
 		{
 			BroadcastAbilityInfo();
@@ -90,6 +93,25 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 void UOverlayWidgetController::OnLevelChanged(int32 NewLevel)
 {
 	OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+}
+
+void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, const FGameplayTag& NewSlot, const FGameplayTag& OldSlot)
+{
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = OldSlot;
+	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+
+	//Broadcast empty info if previous slot is a valid slot. Only if Equipping an already-equipped spell
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	FAuraAbilityInfo NewSlotInfo = AbilityInfo->FindAbilityInfoFromTag(AbilityTag);
+	NewSlotInfo.StatusTag = AbilityStatus;
+	NewSlotInfo.InputTag = NewSlot;
+
+	//Broadcast new slot
+	AbilityInfoDelegate.Broadcast(NewSlotInfo);
 }
 
 template <typename T>
