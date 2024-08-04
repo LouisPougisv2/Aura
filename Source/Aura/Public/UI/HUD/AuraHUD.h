@@ -25,6 +25,9 @@ public:
 	UFUNCTION()
 	class UAttributesMenuWidgetController* GetAttributesMenuWidgetController(const struct FWidgetControllerParam& WidgetControllerParam);
 
+	UFUNCTION()
+	class USpellMenuAuraWidgetController* GetSpellMenuWidgetController(const struct FWidgetControllerParam& WidgetControllerParam);
+
 	void InitOverlay(APlayerController* PC, APlayerState* PS, class UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
 private:
@@ -43,4 +46,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAttributesMenuWidgetController> AttributesMenuWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<USpellMenuAuraWidgetController> SpellMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USpellMenuAuraWidgetController> SpellMenuWidgetControllerClass;
 };
