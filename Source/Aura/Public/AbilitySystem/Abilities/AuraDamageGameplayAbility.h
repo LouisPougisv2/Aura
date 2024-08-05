@@ -27,10 +27,26 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+	FGameplayTag DamageType;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	FScalableFloat Damage;
+
+	//Could be a FScalableFloat with CT based on Level
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffChances = 20.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffDamage = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffFrequency = 1.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffDuration = 5.0f;
+	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& InTaggedMontages) const;
 
-	float GetDamageByDamageType(int32 Level, const FGameplayTag& DamageType) const;
+	float GetDamageAtLevel(int32 Level) const;
 };
