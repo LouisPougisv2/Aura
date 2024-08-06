@@ -19,6 +19,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CauseDamages(AActor* TargetActor);
+
+	UFUNCTION()
+	struct FDamageEffectParams MakeDamageEffectParamsFromClassDefault(AActor* TargetActor = nullptr) const;
 	
 protected:
 

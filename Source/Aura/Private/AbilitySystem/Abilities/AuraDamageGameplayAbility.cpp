@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 
 void UAuraDamageGameplayAbility::CauseDamages(AActor* TargetActor)
 {
@@ -16,6 +17,24 @@ void UAuraDamageGameplayAbility::CauseDamages(AActor* TargetActor)
 		
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), TargetASC);
+}
+
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefault(AActor* TargetActor) const
+{
+	FDamageEffectParams DamageEffectParams;
+	DamageEffectParams.WorldContext = GetAvatarActorFromActorInfo();
+	DamageEffectParams.DamageGameplayEffectClass = DamageGameplayEffectClass;
+	DamageEffectParams.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+	DamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	DamageEffectParams.DamageType = DamageType;
+	DamageEffectParams.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	DamageEffectParams.AbilityLevel = GetAbilityLevel();
+	DamageEffectParams.DebuffDamage = DebuffDamage;
+	DamageEffectParams.DebuffChances = DebuffChances;
+	DamageEffectParams.DebuffFrequency = DebuffFrequency;
+	DamageEffectParams.DebuffDuration = DebuffDuration;
+
+	return DamageEffectParams;
 }
 
 FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& InTaggedMontages) const

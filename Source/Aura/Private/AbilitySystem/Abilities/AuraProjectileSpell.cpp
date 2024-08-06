@@ -36,19 +36,8 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 		const UAbilitySystemComponent* SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
 
-		FGameplayEffectContextHandle GameplayEffectContextHandle = SourceAbilitySystemComponent->MakeEffectContext();
-		GameplayEffectContextHandle.SetAbility(this); //Will set AbilityInstanceNotReplicated, AbilityCDO & AbilityLevel for this context handle
-		GameplayEffectContextHandle.AddSourceObject(Projectile); // Object this effect was created from
+		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefault();
 		
-		const FGameplayEffectSpecHandle SpecHandle = SourceAbilitySystemComponent->MakeOutgoingSpec(DamageGameplayEffectClass, GetAbilityLevel(), GameplayEffectContextHandle);
-
-		FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
-
-		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageType, ScaledDamage);
-		
-		Projectile->GameplayEffectSpecHandle = SpecHandle;
-		Projectile->SetInstigator(Cast<APawn>( GetAvatarActorFromActorInfo()));
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

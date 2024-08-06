@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
+#include "AuraAbilityTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
 
@@ -20,7 +20,7 @@ public:
 	TObjectPtr<class UProjectileMovementComponent> ProjectileMovementComponent;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
-	FGameplayEffectSpecHandle GameplayEffectSpecHandle;
+	FDamageEffectParams DamageEffectParams;
 
 protected:
 
