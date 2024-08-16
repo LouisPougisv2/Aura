@@ -64,8 +64,8 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 	void SetIsCriticalHit(bool IsCritical) { bIsCriticalHit = IsCritical; }
 	void SetIsDebuffSuccessful(bool InIsDebuffSuccessful) { bIsDebuffSuccessful = InIsDebuffSuccessful; }
 	void SetDebuffDamage(float InDebuffDamage) { DebuffDamage = InDebuffDamage; }
-	void SetDebuffFrequency(float InDebuffFrequency) { DebuffDamage = InDebuffFrequency; }
-	void SetDebuffDuration(float InDebuffDuration) { DebuffDamage = InDebuffDuration; }
+	void SetDebuffFrequency(float InDebuffFrequency) { DebuffFrequency = InDebuffFrequency; }
+	void SetDebuffDuration(float InDebuffDuration) { DebuffDuration = InDebuffDuration; }
 	void SetDamageType(TSharedPtr<FGameplayTag> InDamageType) { DamageType = InDamageType; }
 	
 	///** Returns the actual struct used for serialization */

@@ -301,17 +301,18 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* Worl
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffectToTarget(const FDamageEffectParams& DamageEffectParams)
 {
-	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 	
 	FGameplayEffectContextHandle ContextHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
 	ContextHandle.AddSourceObject(DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor());
-	FGameplayEffectSpecHandle EffectSpec = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, ContextHandle);
+	const FGameplayEffectSpecHandle EffectSpec = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, ContextHandle);
 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpec, DamageEffectParams.DamageType, DamageEffectParams.BaseDamage);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpec, GameplayTags.Debuff_Damages, DamageEffectParams.DebuffDamage);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpec, GameplayTags.Debuff_Chances, DamageEffectParams.DebuffChances);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpec, GameplayTags.Debuff_Duration, DamageEffectParams.DebuffDuration);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpec, GameplayTags.Debuff_Frequency, DamageEffectParams.DebuffFrequency);
+	
 	
 	//Dereferencing the wrapper will give us the dereferenced value in it
 	DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
