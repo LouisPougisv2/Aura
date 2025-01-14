@@ -35,7 +35,12 @@ public:
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	virtual void DecrementMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
+	virtual FOnASCRegistered OnASCRegisteredDelegate() override;
+	virtual FOnActorDie OnActorDieDelegate() override;
 	//End Combat Interface
+
+	FOnActorDie OnActorDie;
+	FOnASCRegistered OnAscRegistered;
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
@@ -115,7 +120,9 @@ protected:
 	//Minions
 	UPROPERTY()
 	int32 MinionCount = 0;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UDebuffNiagaraComponent> BurnDebuffComponent;
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")

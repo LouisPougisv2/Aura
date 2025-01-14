@@ -7,6 +7,10 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class UAbilitySystemComponent;
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorDie, AActor*, Actor);
+
 USTRUCT(BlueprintType)
 struct FTaggedMontage
 {
@@ -47,6 +51,10 @@ public:
 	FVector GetCombatSocketLocation(const FGameplayTag& SocketTag);
 	
 	virtual void Die() = 0;
+
+	virtual FOnASCRegistered OnASCRegisteredDelegate() = 0;
+
+	virtual FOnActorDie OnActorDieDelegate() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetFacingWarpTarget(const FVector& TargetLocation);
