@@ -50,7 +50,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetCombatSocketLocation(const FGameplayTag& SocketTag);
 	
-	virtual void Die() = 0;
+	virtual void Die(const FVector& DeathImpulse) = 0;
 
 	virtual FOnASCRegistered OnASCRegisteredDelegate() = 0;
 
