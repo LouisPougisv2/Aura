@@ -42,6 +42,9 @@ void UDebuffNiagaraComponent::BeginPlay()
 
 void UDebuffNiagaraComponent::DebuffTagChanged(const FGameplayTag DebufTag, int32 NewCount)
 {
+	//If Owner is dead, we don't want to Activate the Niagara Component!
+	if(IsValid(GetOwner()) && GetOwner()->Implements<UCombatInterface>() && ICombatInterface::Execute_IsDead(GetOwner())) return;
+	
 	(NewCount > 0) ? Activate() : Deactivate();
 }
 
