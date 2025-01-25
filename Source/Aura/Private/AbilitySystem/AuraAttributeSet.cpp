@@ -342,6 +342,12 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 			
 			//Owner of this Attribute Set
 			EffectProperties.TargetAbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
+
+			const FVector& KnockBackForce = UAuraAbilitySystemLibrary::GetKnockBackForce(EffectProperties.EffectContextHandle);
+			if(!KnockBackForce.IsNearlyZero(1.0f))
+			{
+				EffectProperties.TargetCharacter->LaunchCharacter(KnockBackForce, true, true);
+			}	
 		}
 		
 		ShowFloatingText(EffectProperties, LocalIncomingDamage, UAuraAbilitySystemLibrary::IsBlockedHit(EffectProperties.EffectContextHandle), UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle));

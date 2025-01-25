@@ -67,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary | GameplayEffect")
 	static FVector GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle);
+	
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary | GameplayEffect")
+	static FVector GetKnockBackForce(const FGameplayEffectContextHandle& EffectContextHandle);
 
 	//The UPARAM(ref) allows us to have the EffectContextHandle ref as input pin. Without it, it would be an output pin (unreal default's behaviour for non const param)
 	//The Input pin will have a diamond shape (not a circle one)
@@ -94,6 +97,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayEffect")
 	static void SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InDeathImpulse);
 	
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayEffect")
+	static void SetKnockBackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockBackForce);
+	
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
 	static void GetAlivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
 
@@ -103,6 +109,6 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "AuraAbilitySystemLibrary | GameplayMechanics")
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 	
-	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "AuraAbilitySystemLibrary | DamageEffects")
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary | DamageEffects")
 	static FGameplayEffectContextHandle ApplyDamageEffectToTarget(const struct FDamageEffectParams& DamageEffectParams);
 };

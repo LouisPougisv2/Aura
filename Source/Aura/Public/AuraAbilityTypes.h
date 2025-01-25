@@ -52,6 +52,15 @@ struct FDamageEffectParams
 
 	UPROPERTY()
 	FVector DeathImpulse = FVector::ZeroVector;
+	
+	UPROPERTY()
+	float KnockbackMagnitude = 0.0f;
+	
+	UPROPERTY()
+	FVector KnockbackForce = FVector::ZeroVector;
+
+	UPROPERTY()
+	float KnockbackChance = 0.0f;
 };
 USTRUCT(BlueprintType)
 struct FAuraGameplayEffectContext : public FGameplayEffectContext
@@ -66,6 +75,9 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 	float GetDebuffDuration() const { return DebuffDuration; }
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 	FVector GetDeathImpulse() const { return DeathImpulse; }
+	float GetKnockBackMagnitude() const { return KnockbackMagnitude; }
+	FVector GetKnockBackForce() const { return KnockbackForce; }
+	float GetKnockBackChance() const { return KnockbackChance; }
 
 	void SetIsBlockedHit(bool IsBlocked) { bIsBlockedHit = IsBlocked; }
 	void SetIsCriticalHit(bool IsCritical) { bIsCriticalHit = IsCritical; }
@@ -75,6 +87,9 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 	void SetDebuffDuration(float InDebuffDuration) { DebuffDuration = InDebuffDuration; }
 	void SetDamageType(TSharedPtr<FGameplayTag> InDamageType) { DamageType = InDamageType; }
 	void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
+	void SetKnockBackMagnitude(float InKnockBackMagnitude) { KnockbackMagnitude = InKnockBackMagnitude; }
+	void SetKnockBackForce(const FVector& InForce) { KnockbackForce = InForce; }
+	void SetKnockBackChances(float InChances) { KnockbackChance = InChances; }
 	
 	///** Returns the actual struct used for serialization */
 	virtual UScriptStruct* GetScriptStruct() const override;
@@ -111,6 +126,15 @@ protected:
 
 	UPROPERTY()
 	FVector DeathImpulse = FVector::ZeroVector;
+
+	UPROPERTY()
+	float KnockbackMagnitude = 0.0f;
+	
+	UPROPERTY()
+	FVector KnockbackForce = FVector::ZeroVector;
+
+	UPROPERTY()
+	float KnockbackChance = 0.0f;
 };
 
 template<>
