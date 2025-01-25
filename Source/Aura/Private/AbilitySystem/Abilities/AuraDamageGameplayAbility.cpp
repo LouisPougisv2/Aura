@@ -5,20 +5,49 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 
 void UAuraDamageGameplayAbility::CauseDamages(AActor* TargetActor)
 {
 	if(!IsValid(TargetActor)) return;
 	
 	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffectClass, 1.0f);
-	for (TTuple<FGameplayTag, FScalableFloat> DamageTypePair : DamageTypes)
-	{
-		const float DamageMagnitude = DamageTypePair.Value.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, DamageTypePair.Key, DamageMagnitude);
-	}
-	
+	const float DamageMagnitude = Damage.GetValueAtLevel(GetAbilityLevel());
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, DamageType, DamageMagnitude);
+		
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), TargetASC);
+}
+
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefault(AActor* TargetActor) const
+{
+	FDamageEffectParams DamageEffectParams;
+	DamageEffectParams.WorldContext = GetAvatarActorFromActorInfo();
+	DamageEffectParams.DamageGameplayEffectClass = DamageGameplayEffectClass;
+	DamageEffectParams.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+	DamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	DamageEffectParams.DamageType = DamageType;
+	DamageEffectParams.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	DamageEffectParams.AbilityLevel = GetAbilityLevel();
+	DamageEffectParams.DebuffDamage = DebuffDamage;
+	DamageEffectParams.DebuffChances = DebuffChances;
+	DamageEffectParams.DebuffFrequency = DebuffFrequency;
+	DamageEffectParams.DebuffDuration = DebuffDuration;
+	DamageEffectParams.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	DamageEffectParams.KnockbackMagnitude = KnockbackMagnitude;
+	DamageEffectParams.KnockbackChance = KnockbackChance;
+
+	if(IsValid(TargetActor))
+	{
+		FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation(); 
+		Rotation.Pitch = 45.0f;
+		const FVector AvatarToTarget = Rotation.Vector();
+		DamageEffectParams.DeathImpulse = AvatarToTarget * DeathImpulseMagnitude;
+		DamageEffectParams.KnockbackForce = AvatarToTarget * KnockbackMagnitude;
+		
+	}
+
+	return DamageEffectParams;
 }
 
 FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& InTaggedMontages) const
@@ -32,8 +61,7 @@ FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontageFromArray(const
 	return FTaggedMontage();
 }
 
-float UAuraDamageGameplayAbility::GetDamageByDamageType(int32 Level, const FGameplayTag& DamageType) const
+float UAuraDamageGameplayAbility::GetDamageAtLevel(int32 Level) const
 {
-	checkf(DamageTypes.Contains(DamageType), TEXT("Gameplay Ability %s doesn't contain Damage type %s"), *GetNameSafe(this), *DamageType.ToString());
-	return DamageTypes[DamageType].GetValueAtLevel(Level);
+	return Damage.GetValueAtLevel(Level); 
 }

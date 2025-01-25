@@ -51,29 +51,34 @@ void AAuraProjectile::BeginPlay()
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(Other == GetInstigator()) return;
-	
-	if (!GameplayEffectSpecHandle.Data.IsValid() || GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == Other)
-	{
-		return;
-	}
+
+	if(DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor() == Other) return;
 
 	//Preventing enemy to damage each other (preventing players to hit each other too)
-	if(GameplayEffectSpecHandle.Data.IsValid() && UAuraAbilitySystemLibrary::AreFriends(GameplayEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), Other))
-	{
-		return;
-	}
+	if(UAuraAbilitySystemLibrary::AreFriends(DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(), Other)) return;
 
-	ImpactSoundAndEffect();
-	
-	
+	ImpactSoundAndEffect();	
 	if(HasAuthority())
 	{
-
 		if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Other))
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*GameplayEffectSpecHandle.Data.Get());
+			const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+			DamageEffectParams.DeathImpulse = DeathImpulse;
+			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+
+			const bool bShouldKnockBack = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+			if(bShouldKnockBack)
+			{
+				//const FVector KnockBackDirection = GetActorForwardVector().RotateAngleAxis(45.0f, GetActorRightVector());
+				FRotator Rotation = GetActorRotation();
+				Rotation.Pitch = 45.0f;
+				const FVector KnockBackDirection = Rotation.Vector();
+				const FVector KnockBackForce = KnockBackDirection * DamageEffectParams.KnockbackMagnitude;
+				DamageEffectParams.KnockbackForce = KnockBackForce;
+			}
+			
+			UAuraAbilitySystemLibrary::ApplyDamageEffectToTarget(DamageEffectParams);
 		}
-		
 		Destroy();
 	}
 	else

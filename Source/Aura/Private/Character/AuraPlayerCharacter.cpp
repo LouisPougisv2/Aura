@@ -56,6 +56,7 @@ void AAuraPlayerCharacter::InitAbilityActorInfo()
 	}
 	
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
 	//Init the Overlay
