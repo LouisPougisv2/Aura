@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/AuraFirebolt.h"
 
 #include "AuraGameplayTags.h"
+#include "Actor/AuraProjectile.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraFirebolt::GetDescription(int32 Level)
 {
@@ -79,4 +81,43 @@ FString UAuraFirebolt::GetNextLevelDescription(int32 NextLevel)
 		Cooldown,
 		FMath::Min(NextLevel, NumProjectiles),
 		ScaledDamage);
+}
+
+void UAuraFirebolt::SpawnProjectiles(const FVector& TargetLocation, AActor* HomingTarget, const FGameplayTag& SocketTag, bool bOverridePitch, float PitchOverride)
+{
+	if(GetAvatarActorFromActorInfo()->HasAuthority() && ProjectileClass.Get())
+	{
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+		FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
+
+		if(bOverridePitch)
+		{
+			Rotation.Pitch = PitchOverride;
+		}
+
+		const FVector ForwardVector = Rotation.Vector();
+		const FVector LeftOfSpread = ForwardVector.RotateAngleAxis(- ProjectileSpread / 2, FVector::UpVector);		
+		const FVector RightOfSpread = ForwardVector.RotateAngleAxis(ProjectileSpread / 2, FVector::UpVector);
+		const FVector Start = SocketLocation + FVector(0.0f, 0.0f, 10.0f);
+		
+		//NumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
+		if(NumProjectiles > 1)
+		{
+			//Spread out algorithm
+			const float DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
+			for(int i = 0; i < NumProjectiles; ++i)
+			{
+				const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
+				UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + Direction * 75.0f,  1.0f, FLinearColor::Red,60.0f, 1.0f);
+		
+			}
+		}
+		else
+		{
+			//Single projectile
+			UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + ForwardVector * 75.0f,  1.0f, FLinearColor::Red,60.0f, 1.0f);
+		}
+		//Draw a debug arrow in the direction of this rotation
+		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + ForwardVector * 150.0f,  1.0f, FLinearColor::White,60.0f, 1.0f);
+	}
 }
