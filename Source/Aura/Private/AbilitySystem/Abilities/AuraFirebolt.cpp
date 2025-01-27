@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AuraFirebolt.h"
 
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Actor/AuraProjectile.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -96,28 +97,27 @@ void UAuraFirebolt::SpawnProjectiles(const FVector& TargetLocation, AActor* Homi
 		}
 
 		const FVector ForwardVector = Rotation.Vector();
-		const FVector LeftOfSpread = ForwardVector.RotateAngleAxis(- ProjectileSpread / 2, FVector::UpVector);		
-		const FVector RightOfSpread = ForwardVector.RotateAngleAxis(ProjectileSpread / 2, FVector::UpVector);
-		const FVector Start = SocketLocation + FVector(0.0f, 0.0f, 10.0f);
-		
-		//NumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
-		if(NumProjectiles > 1)
+
+		//Next line will potentially be useful in the future
+		//int32 NumberOfProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
+		TArray<FRotator> SpreadOutRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, NumProjectiles);
+
+		for (const FRotator& Rot : SpreadOutRotators)
 		{
-			//Spread out algorithm
-			const float DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
-			for(int i = 0; i < NumProjectiles; ++i)
-			{
-				const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-				UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + Direction * 75.0f,  1.0f, FLinearColor::Red,60.0f, 1.0f);
+			FTransform SpawnTransform;
+			SpawnTransform.SetLocation(SocketLocation);
+			SpawnTransform.SetRotation(Rot.Quaternion());
+
+			AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(),
+				Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			
+			Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefault();
+			Projectile->FinishSpawning(SpawnTransform);
+		}
 		
-			}
-		}
-		else
+		/*for (auto Rotator : SpreadOutRotators)
 		{
-			//Single projectile
-			UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + ForwardVector * 75.0f,  1.0f, FLinearColor::Red,60.0f, 1.0f);
-		}
-		//Draw a debug arrow in the direction of this rotation
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Start, Start + ForwardVector * 150.0f,  1.0f, FLinearColor::White,60.0f, 1.0f);
+			UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation + FVector(0.0f, 0.0f, 10.f), SocketLocation + Rotator.Vector() * 75.0f,  1.0f, FLinearColor::Green,60.0f, 1.0f);
+		}*/
 	}
 }

@@ -333,6 +333,52 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* Worl
 	return static_cast<int32>(XPReward);
 }
 
+TArray<FRotator> UAuraAbilitySystemLibrary::EvenlySpacedRotators(const FVector& ForwardVector, const FVector& RotationAxis, float SpreadAngle, int32 NumOfRotators)
+{
+	TArray<FRotator> Rotators;
+	
+	const FVector LeftOfSpread = ForwardVector.RotateAngleAxis(- SpreadAngle / 2, RotationAxis);		
+
+	if(NumOfRotators > 1)
+	{
+		//Spread out algorithm
+		const float DeltaSpread = SpreadAngle / (NumOfRotators - 1);
+		for(int i = 0; i < NumOfRotators; ++i)
+		{
+			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
+			Rotators.AddUnique(Direction.Rotation());
+		}
+	}
+	else
+	{
+		Rotators.AddUnique(ForwardVector.Rotation());
+	}
+	return Rotators;
+}
+
+TArray<FVector> UAuraAbilitySystemLibrary::EvenlySpacedVectors(const FVector& ForwardVector, const FVector& RotationAxis, float SpreadAngle, int32 NumOfVectors)
+{
+	TArray<FVector> Vectors;
+	
+	const FVector LeftOfSpread = ForwardVector.RotateAngleAxis(- SpreadAngle / 2, RotationAxis);		
+
+	if(NumOfVectors > 1)
+	{
+		//Spread out algorithm
+		const float DeltaSpread = SpreadAngle / (NumOfVectors - 1);
+		for(int i = 0; i < NumOfVectors; ++i)
+		{
+			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
+			Vectors.AddUnique(Direction);
+		}
+	}
+	else
+	{
+		Vectors.AddUnique(ForwardVector);
+	}
+	return Vectors;
+}
+
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffectToTarget(const FDamageEffectParams& DamageEffectParams)
 {
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
