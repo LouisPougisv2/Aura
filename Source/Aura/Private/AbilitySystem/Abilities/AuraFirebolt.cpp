@@ -6,6 +6,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Actor/AuraProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraFirebolt::GetDescription(int32 Level)
@@ -98,9 +99,8 @@ void UAuraFirebolt::SpawnProjectiles(const FVector& TargetLocation, AActor* Homi
 
 		const FVector ForwardVector = Rotation.Vector();
 
-		//Next line will potentially be useful in the future
-		//int32 NumberOfProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
-		TArray<FRotator> SpreadOutRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, NumProjectiles);
+		const int32 EffectiveNumberProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
+		TArray<FRotator> SpreadOutRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, EffectiveNumberProjectiles);
 
 		for (const FRotator& Rot : SpreadOutRotators)
 		{
@@ -112,6 +112,22 @@ void UAuraFirebolt::SpawnProjectiles(const FVector& TargetLocation, AActor* Homi
 				Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 			
 			Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefault();
+
+			
+			if(IsValid(HomingTarget) && HomingTarget->Implements<UCombatInterface>()) //Not clicking on the floor
+			{
+				Projectile->ProjectileMovementComponent->HomingTargetComponent = HomingTarget->GetRootComponent();
+			}
+			else
+			{
+				//Since HomingTargetComponent is a weak pointer, when the projectile dies in HomingTargetComponent or goes out of scope	this new object is not going to be cleaned up
+				//Hence why the projectile now has a HomingTargetSceneComponent 
+				Projectile->HomingTargetSceneComponent =  NewObject<USceneComponent>(USceneComponent::StaticClass());
+				Projectile->HomingTargetSceneComponent->SetWorldLocation(TargetLocation);
+				Projectile->ProjectileMovementComponent->HomingTargetComponent = Projectile->HomingTargetSceneComponent;
+			}
+			Projectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::FRandRange(HomingAccelerationMin, HomingAccelerationMax);
+			Projectile->ProjectileMovementComponent->bIsHomingProjectile = bIsHomingProjectile;
 			Projectile->FinishSpawning(SpawnTransform);
 		}
 		
