@@ -168,7 +168,7 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		bIsTargetingEnemy = CurrentActor ? true : false;
 		bIsAutoRunning = false; //We don't know yet if it is a short press
 	}
-	
+	if(IsValid(GetAuraAbilitySystemComponent())) GetAuraAbilitySystemComponent()->AbilityInputTagPressed(InputTag);
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)

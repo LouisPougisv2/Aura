@@ -111,6 +111,7 @@ void AAuraProjectile::ImpactSoundAndEffect()
 	if(LoopingSoundComponent)
 	{
 		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
 	}
 	bHit = true;
 }

@@ -88,4 +88,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClass  GetCharacterClass();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetShockLoop(bool bInLoop);
 };
