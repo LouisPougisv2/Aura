@@ -109,6 +109,14 @@ public:
 	 * Meta attributes Tags
 	 */
 	FGameplayTag Attributes_Meta_IncomingXP;
+
+	/*
+	 * Block Player Inputs Tag
+	 */
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputReleased;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_CursorTrace;
 	
 private:
 
