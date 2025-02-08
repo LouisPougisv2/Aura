@@ -122,6 +122,11 @@ FOnActorDie AAuraCharacterBase::OnActorDieDelegate()
 	return OnActorDie;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation()
+{
+	return WeaponMesh;
+}
+
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
