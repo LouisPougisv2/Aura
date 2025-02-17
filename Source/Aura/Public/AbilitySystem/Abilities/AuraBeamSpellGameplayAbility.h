@@ -35,4 +35,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StoreOwnerVariables();
+
+	//Function that traces the location of any enemy that would stand between the Player & the Beam Target Location.
+	//If FirstTarget exist, it should become the hit actor & receive damages accordingly
+	UFUNCTION(BlueprintCallable)
+	void TraceFirstTarget(const FVector& BeamTargetLocation);
 };
